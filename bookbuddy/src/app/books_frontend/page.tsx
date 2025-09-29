@@ -1,6 +1,8 @@
+// src/app/books_frontend/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import MangaCard from "@/components/MangaCard";
 import PillTabs from "@/components/PillTabs";
 import SectionHeader from "@/components/SectionHeader";
@@ -17,6 +19,9 @@ type BookItem = {
 };
 
 export default function BooksFrontendPage() {
+  const sp = useSearchParams();
+  const q = (sp.get("q") || "").trim();            // 🔎 read q from URL
+
   const [books, setBooks] = useState<BookItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [cat, setCat] = useState("Manga");
@@ -25,17 +30,17 @@ export default function BooksFrontendPage() {
     let cancel = false;
     (async () => {
       try {
-        const res = await fetch("/api/books?limit=1000", { cache: "no-store" });
+        const url = q ? `/api/books?q=${encodeURIComponent(q)}&limit=1000`
+                      : `/api/books?limit=1000`;
+        const res = await fetch(url, { cache: "no-store" });
         const data = await res.json();
         if (!cancel && data.ok) setBooks(data.items || []);
       } finally {
         if (!cancel) setLoading(false);
       }
     })();
-    return () => {
-      cancel = true;
-    };
-  }, []);
+    return () => { cancel = true; };
+  }, [q]); // 🔁 refetch when q changes
 
   const allTags = useMemo(
     () => Array.from(new Set(books.map((b) => b.genre || "Manga"))).sort(),
@@ -49,24 +54,23 @@ export default function BooksFrontendPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title="All English Manga" subtitle="Data from MongoDB" />
+      <SectionHeader title="All English Manga" subtitle={q ? `Results for “${q}”` : "Data from MongoDB"} />
+
       <div className="max-w-xl">
-        <PillTabs
-          items={allTags.length ? allTags : ["Manga"]}
-          value={cat}
-          onChange={setCat}
-        />
+        <PillTabs items={allTags.length ? allTags : ["Manga"]} value={cat} onChange={setCat} />
       </div>
 
       {loading ? (
         <p className="text-sm text-white/60">Loading…</p>
+      ) : books.length === 0 ? (
+        <p className="text-sm text-white/60">No results {q && <>for “{q}”</>}.</p>
       ) : (
         <>
           <HScroll>
             {books.slice(0, 12).map((b) => (
               <MangaCard
                 key={b.id}
-                href={`/books_frontend/${b.isbn || b.id}`} // <-- detail link here
+                href={`/books_frontend/${b.isbn || b.id}`}
                 title={b.title}
                 author={b.author}
                 cover={b.cover}
@@ -79,7 +83,7 @@ export default function BooksFrontendPage() {
             {filtered.map((b) => (
               <MangaCard
                 key={b.id}
-                href={`/books_frontend/${b.isbn || b.id}`} // <-- detail link here
+                href={`/books_frontend/${b.isbn || b.id}`}
                 title={b.title}
                 author={b.author}
                 cover={b.cover}

@@ -1,62 +1,75 @@
 // src/app/api/books/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { getCollection } from "../../../lib/mongodb";
+import { NextResponse } from "next/server";
+import { getCollection } from "@/lib/mongodb";
+import type { Filter } from "mongodb";
 
 type BookDoc = {
-  _id: any;
+  _id?: any;
   title: string;
   isbn: string;
   author: string;
-  summary: string;
-  cover_url: string;
-  language: string;
+  summary?: string;
+  cover_url?: string;
+  language?: string;
   genre?: string;
-  quantity: number;
-  updatedAt?: Date;
+  quantity?: number;
   createdAt?: Date;
 };
 
-export async function GET(req: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const limit = Math.min(Number(searchParams.get("limit") ?? 1000), 2000);
-    const skip = Math.max(Number(searchParams.get("skip") ?? 0), 0);
-    const q = (searchParams.get("q") || "").trim();
-    const genre = (searchParams.get("genre") || "").trim();
+    const url = new URL(req.url);
+    const q = (url.searchParams.get("q") || "").trim();
+    const tag = (url.searchParams.get("tag") || "").trim();
+    const limit = Math.min( +url.searchParams.get("limit")! || 50, 200);
+    const offset = Math.max( +url.searchParams.get("offset")! || 0, 0);
 
     const col = await getCollection<BookDoc>(
       process.env.COLLECTION_NAME || "book_inventory"
     );
 
-    const filter: any = { language: "en" };
-    if (genre) filter.genre = { $regex: genre, $options: "i" };
-    if (q) filter.$text = { $search: q };
+    const filter: Filter<BookDoc> = {
+      // keep only English if that’s your data; remove if you store mixed languages
+      language: "en",
+      ...(tag ? { genre: tag } : {}),
+      ...(q
+        ? {
+            $or: [
+              { title:   { $regex: q, $options: "i" } },
+              { author:  { $regex: q, $options: "i" } },
+              { isbn:    { $regex: q, $options: "i" } },
+              { genre:   { $regex: q, $options: "i" } },
+            ],
+          }
+        : {}),
+    };
 
     const cursor = col
-      .find(filter, { projection: { summary: 0 } }) // omit heavy field for list
-      .sort({ quantity: -1, updatedAt: -1, createdAt: -1 })
-      .skip(skip)
+      .find(filter, { projection: {
+        title: 1, author: 1, isbn: 1, genre: 1, quantity: 1, cover_url: 1
+      }})
+      .sort({ createdAt: -1, _id: -1 })
+      .skip(offset)
       .limit(limit);
 
     const docs = await cursor.toArray();
 
-    return NextResponse.json({
-      ok: true,
-      count: docs.length,
-      items: docs.map((d) => ({
-        id: String(d._id),
-        title: d.title,
-        author: d.author,
-        cover: d.cover_url,
-        isbn: d.isbn,
-        genre: d.genre ?? "Manga",
-        quantity: d.quantity,
-      })),
-    });
-  } catch (e: any) {
-    return NextResponse.json(
-      { ok: false, error: e?.message || String(e) },
-      { status: 500 }
-    );
+    // Normalize to what your UI expects
+    const items = docs.map((d) => ({
+      id: String(d._id),
+      title: d.title,
+      author: d.author,
+      isbn: d.isbn,
+      genre: d.genre ?? "Manga",
+      quantity: d.quantity ?? 0,
+      cover: d.cover_url || "/placeholder-cover.png",
+    }));
+
+    return NextResponse.json({ ok: true, items });
+  } catch (err) {
+    console.error("GET /api/books failed:", err);
+    return NextResponse.json({ ok: false, error: "Failed to fetch books" }, { status: 500 });
   }
 }

@@ -5,6 +5,7 @@ import SectionHeader from "@/components/SectionHeader";
 import PillTabs from "@/components/PillTabs";
 import HScroll from "@/components/HScroll";
 import MangaCard from "@/components/MangaCard";
+import SearchBooks from "@/components/SearchBooks";
 import { useEffect, useMemo, useState } from "react";
 
 type BookItem = {
@@ -63,6 +64,10 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       <HeroCyber />
+
+      <div className="max-w-2xl mx-auto w-full">
+        <SearchBooks />
+      </div>
 
       <div className="grid md:grid-cols-3 gap-4">
         {[
