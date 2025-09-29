@@ -3,9 +3,9 @@
 > Web app to browse, search, and buy English manga.
 
 ## Team Members
-- Yan ([@yano49](https://github.com/yano49)) — [Repo](https://github.com/yano49/Book_Buddy)
-- Norman ([@Norman7781](https://github.com/Norman7781)) — [Repo](https://github.com/Norman7781/Book_Buddy)
-<!-- Add more teammates in the same format; no student IDs -->
+- Aung Kaung Myat ([@Norman7781](https://github.com/Norman7781)) — [Repo](https://github.com/Norman7781/Book_Buddy)
+- Wai Yan Mya Thaung ([@yano49](https://github.com/yano49)) — [Repo](https://github.com/yano49/yano49.github.io.git)
+- Nyi Thu Hein ([@zenn404](https://github.com/zenn404)) - [Repo](https://github.com/zenn404/zenn404.github.io.git)
 
 ## Project Description
 BookBuddy is a Next.js app where users can explore a manga catalog, search by title/author/genre, view book details from a database, and add items to a cart/wishlist.  
@@ -14,9 +14,6 @@ Key features:
 - Search bar (routes to `/books_frontend?q=...`)
 - Cart drawer + full cart page
 - Simple auth (login/register demo)
-
-## Screenshots
-> Put your images in `docs/screenshots/` (or `public/screenshots/`) and update the paths below.
 
 **Home**
 ![Home](docs/screenshots/home.png)
