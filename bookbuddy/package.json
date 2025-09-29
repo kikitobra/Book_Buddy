@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "init:db": "tsx scripts/initDb.ts"
+    "init:db": "tsx scripts/initDb.ts",
+    "init:users": "tsx scripts/initUsers.ts"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "jose": "^6.1.0",
     "mongodb": "^6.20.0",
     "next": "15.5.4",
     "react": "19.1.0",

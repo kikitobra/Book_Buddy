@@ -20,7 +20,7 @@ type BookItem = {
 
 export default function BooksFrontendPage() {
   const sp = useSearchParams();
-  const q = (sp.get("q") || "").trim();            // 🔎 read q from URL
+  const q = (sp.get("q") || "").trim(); // 🔎 read q from URL
 
   const [books, setBooks] = useState<BookItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,8 +30,9 @@ export default function BooksFrontendPage() {
     let cancel = false;
     (async () => {
       try {
-        const url = q ? `/api/books?q=${encodeURIComponent(q)}&limit=1000`
-                      : `/api/books?limit=1000`;
+        const url = q
+          ? `/api/books?q=${encodeURIComponent(q)}&limit=1000`
+          : `/api/books?limit=1000`;
         const res = await fetch(url, { cache: "no-store" });
         const data = await res.json();
         if (!cancel && data.ok) setBooks(data.items || []);
@@ -39,7 +40,9 @@ export default function BooksFrontendPage() {
         if (!cancel) setLoading(false);
       }
     })();
-    return () => { cancel = true; };
+    return () => {
+      cancel = true;
+    };
   }, [q]); // 🔁 refetch when q changes
 
   const allTags = useMemo(
@@ -54,16 +57,32 @@ export default function BooksFrontendPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title="All English Manga" subtitle={q ? `Results for “${q}”` : "Data from MongoDB"} />
+      <SectionHeader
+        title="All English Manga"
+        subtitle={q ? `Results for “${q}”` : "Data from MongoDB"}
+      />
 
       <div className="max-w-xl">
-        <PillTabs items={allTags.length ? allTags : ["Manga"]} value={cat} onChange={setCat} />
+        <PillTabs
+          items={allTags.length ? allTags : ["Manga"]}
+          value={cat}
+          onChange={setCat}
+        />
       </div>
 
       {loading ? (
-        <p className="text-sm text-white/60">Loading…</p>
+        <div className="flex items-center justify-center py-12">
+          <img
+            src="/Figure-Gif-unscreen.gif"
+            alt="Loading"
+            className="w-36 h-36 object-contain"
+            aria-busy="true"
+          />
+        </div>
       ) : books.length === 0 ? (
-        <p className="text-sm text-white/60">No results {q && <>for “{q}”</>}.</p>
+        <p className="text-sm text-white/60">
+          No results {q && <>for “{q}”</>}.
+        </p>
       ) : (
         <>
           <HScroll>

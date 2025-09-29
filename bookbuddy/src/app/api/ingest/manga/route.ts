@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { usersCollection, verifyPassword, setSession } from "@/lib/auth";
 import { getCollection } from "@/lib/mongodb";
 
 const MAX_RESULTS = 40; // Google limit
@@ -65,7 +66,33 @@ async function fetchPage(startIndex: number) {
   return res.json();
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const { email, password } = await req.json();
+  const users = await usersCollection();
+  const user = await users.findOne({ email });
+
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, error: "User not found" },
+      { status: 401 }
+    );
+  }
+
+  // check password
+  const ok = await verifyPassword(password, user.password_hash);
+  if (!ok) {
+    await users.updateOne(
+      { _id: user._id },
+      { $inc: { failed_login_attempts: 1 }, $set: { updated_at: new Date() } }
+    );
+    return NextResponse.json(
+      { ok: false, error: "Invalid credentials" },
+      { status: 401 }
+    );
+  }
+  // create server-side session cookie
+  await setSession({ userId: String(user._id), email: user.email });
+
   const coll = await getCollection();
 
   // indexes once (ignore errors if they already exist)

@@ -83,7 +83,14 @@ export default function HomePage() {
       </div>
 
       {loading ? (
-        <p className="text-sm text-white/60">Loading books…</p>
+        <div className="flex items-center justify-center py-12">
+          <img
+            src="/Figure-Gif-unscreen.gif"
+            alt="Loading"
+            className="w-36 h-36 object-contain"
+            aria-busy="true"
+          />
+        </div>
       ) : (
         <>
           <section>
