@@ -19,8 +19,23 @@
   }
 }
 
+/* Cyber background & helpers */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(159,102,255,.25), transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(95,236,200,.18), transparent 60%),
+    #0A0B10;
 }
+
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(8px);
+}
+
+.btn-neon {
+  @apply rounded-xl px-5 py-2 font-medium;
+  background: linear-gradient(90deg, #FF4DCD, #9A6BFF, #2FD8FF);
+  color: #0A0B10;
+}
+
