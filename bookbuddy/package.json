@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "init:db": "tsx scripts/initDb.ts",
-    "init:users": "tsx scripts/initUsers.ts"
+    "init:users": "tsx scripts/initUsers.ts",
+    "init:wishlist": "tsx scripts/initWishlist.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
