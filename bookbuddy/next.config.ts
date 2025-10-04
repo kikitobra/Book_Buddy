@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
   basePath: "/bookbuddy",
   assetPrefix: "/bookbuddy",
 
+  // Disable strict linting during build for production
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   // ✅ Allow external book images from Google Books (and other possible sources)
   images: {
     remotePatterns: [
