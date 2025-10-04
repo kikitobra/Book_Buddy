@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getApiPath } from "@/lib/utils";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(getApiPath("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -32,7 +33,7 @@ export default function LoginPage() {
         localStorage.setItem("auth_token", data.token);
         localStorage.setItem("user_name", data.user?.name || "User");
         localStorage.setItem("user_email", data.user?.email || email);
-        
+
         // Dispatch custom event to notify navbar of auth change
         window.dispatchEvent(new CustomEvent("authStateChanged"));
       }

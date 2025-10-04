@@ -5,9 +5,17 @@ const nextConfig: NextConfig = {
   // Fix: explicitly set the tracing root so Next doesn't infer the workspace root
   outputFileTracingRoot: path.resolve(__dirname),
 
-  // Base path for deployment
-  basePath: "/bookbuddy",
-  assetPrefix: "/bookbuddy",
+  // Base path for deployment (only in production)
+  ...(process.env.NODE_ENV === "production" && {
+    basePath: "/bookbuddy",
+    assetPrefix: "/bookbuddy",
+  }),
+
+  // Make basePath available to client-side code
+  env: {
+    NEXT_PUBLIC_BASE_PATH:
+      process.env.NODE_ENV === "production" ? "/bookbuddy" : "",
+  },
 
   // Disable strict linting during build for production
   eslint: {

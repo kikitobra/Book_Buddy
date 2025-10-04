@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { getApiPath } from "@/lib/utils";
 
 export default function NavbarCyber() {
   const pathname = usePathname();
@@ -26,7 +27,7 @@ export default function NavbarCyber() {
 
         // Then verify with server
         try {
-          const res = await fetch("/api/auth/me", {
+          const res = await fetch(getApiPath("/api/auth/me"), {
             cache: "no-store",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -93,7 +94,7 @@ export default function NavbarCyber() {
     // Call logout endpoint (optional, since we're using stateless auth)
     (async () => {
       try {
-        await fetch("/api/auth/logout", { method: "POST" });
+        await fetch(getApiPath("/api/auth/logout"), { method: "POST" });
       } catch (e) {
         // Ignore logout errors since we already cleared localStorage
       }

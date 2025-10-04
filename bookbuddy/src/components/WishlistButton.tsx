@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { getApiPath } from "@/lib/utils";
 
 type Props = {
   bookId: string;
@@ -28,7 +29,7 @@ export default function WishlistButton({
     try {
       if (inWishlist) {
         // Remove from wishlist
-        const res = await fetch(`/api/wishlist/${bookId}`, {
+        const res = await fetch(getApiPath(`/api/wishlist/${bookId}`), {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +45,7 @@ export default function WishlistButton({
         }
       } else {
         // Add to wishlist
-        const res = await fetch("/api/wishlist", {
+        const res = await fetch(getApiPath("/api/wishlist"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

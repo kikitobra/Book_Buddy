@@ -6,6 +6,7 @@ import HScroll from "@/components/HScroll";
 import MangaCard from "@/components/MangaCard";
 import SearchBooks from "@/components/SearchBooks";
 import { useEffect, useMemo, useState } from "react";
+import { getApiPath } from "@/lib/utils";
 
 type BookItem = {
   id: string;
@@ -27,7 +28,9 @@ export default function HomePage() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/books?limit=1000", { cache: "no-store" });
+        const res = await fetch(getApiPath("/api/books?limit=1000"), {
+          cache: "no-store",
+        });
         const data = await res.json();
         if (!cancelled && data.ok) setBooks(data.items || []);
       } catch (e) {
