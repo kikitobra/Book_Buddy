@@ -13,7 +13,7 @@ export default function HeroCyber() {
           buy instantly.
         </p>
         <div className="mt-6 flex gap-3">
-          <Link href="/books" className="btn-neon">
+          <Link href="/books_frontend" className="btn-neon">
             Browse Catalog
           </Link>
           <a

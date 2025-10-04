@@ -2,7 +2,6 @@
 
 import HeroCyber from "@/components/HeroCyber";
 import SectionHeader from "@/components/SectionHeader";
-import PillTabs from "@/components/PillTabs";
 import HScroll from "@/components/HScroll";
 import MangaCard from "@/components/MangaCard";
 import SearchBooks from "@/components/SearchBooks";
@@ -93,6 +92,7 @@ export default function HomePage() {
         </div>
       ) : (
         <>
+          {/* 🔥 Trending Horizontal Scroll */}
           <section>
             <SectionHeader
               title="Trending & Popular"
@@ -112,16 +112,9 @@ export default function HomePage() {
             </HScroll>
           </section>
 
+          {/* ✅ Popular section (no category bar) */}
           <section id="popular" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <SectionHeader title="Popular by Category" />
-              <div className="hidden md:block w-1/2">
-                <PillTabs items={allTags} value={cat} onChange={setCat} />
-              </div>
-            </div>
-            <div className="md:hidden">
-              <PillTabs items={allTags} value={cat} onChange={setCat} />
-            </div>
+            <SectionHeader title="Popular Picks" />
             <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
               {popularByCat.slice(0, 10).map((b) => (
                 <MangaCard
@@ -135,6 +128,7 @@ export default function HomePage() {
             </div>
           </section>
 
+          {/* 🔥 Newly Released */}
           <section>
             <SectionHeader title="Newly Released" />
             <HScroll>
@@ -151,18 +145,14 @@ export default function HomePage() {
             </HScroll>
           </section>
 
+          {/* 🔥 Daily Updates */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <SectionHeader
                 title="Daily"
                 subtitle="Updates by day (demo layout)"
               />
-              <div className="hidden md:block">
-                <PillTabs items={weekdays} value={day} onChange={setDay} />
-              </div>
-            </div>
-            <div className="md:hidden">
-              <PillTabs items={weekdays} value={day} onChange={setDay} />
+              {/* still using PillTabs for weekdays */}
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-4">
               {daily.slice(0, 12).map((b) => (

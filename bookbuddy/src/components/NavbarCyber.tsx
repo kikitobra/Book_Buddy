@@ -1,32 +1,16 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
-
-const NavLink = ({ href, label }: { href: string; label: string }) => {
-  const path = usePathname();
-  const active = path === href;
-  return (
-    <Link
-      href={href}
-      className={`px-3 py-2 rounded-xl text-sm transition
-        ${
-          active
-            ? "text-white bg-white/5"
-            : "text-white/70 hover:text-white hover:bg-white/5"
-        }`}
-    >
-      {label}
-    </Link>
-  );
-};
+import { useCart } from "@/context/CartContext";
 
 export default function NavbarCyber() {
-  const { count, toggle } = useCart();
+  const pathname = usePathname();
   const router = useRouter();
   const [authed, setAuthed] = useState(false);
   const [name, setName] = useState<string | null>(null);
+  const { count, toggle } = useCart();
 
   useEffect(() => {
     let mounted = true;
@@ -117,63 +101,81 @@ export default function NavbarCyber() {
       router.refresh();
     })();
   };
+  const navItems = [
+    { href: "/", label: "Home" }, // ✅ Added Home
+    { href: "/books_frontend", label: "Catalog" },
+    { href: "/wishlist", label: "Wishlist" },
+    { href: "/cart", label: "Cart" },
+  ];
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line/50 bg-bg/60 backdrop-blur">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-6">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-neon.pink via-neon.purple to-neon.blue shadow-glow" />
-          <span className="font-extrabold tracking-wide text-white">
-            BookBuddy
-          </span>
+    <nav className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+      <div className="flex items-center gap-6">
+        <Link href="/" className="text-lg font-bold text-white">
+          BookBuddy
         </Link>
 
-        <nav className="hidden md:flex gap-1">
-          <NavLink href="/books" label="Catalog" />
-          <NavLink href="/wishlist" label="Wishlist" />
-          <NavLink href="/cart" label="Cart" />
-        </nav>
-
-        <div className="ml-auto flex items-center gap-3">
-          {authed ? (
-            <>
-              <Link
-                href="/account"
-                className="text-white/80 text-sm hover:text-white underline"
-              >
-                Hello, {name ?? "Reader"}
-              </Link>
-              <button
-                onClick={signOut}
-                className="rounded-xl border border-line px-3 py-1.5 text-white/80 hover:text-white hover:border-white/30"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/auth/login"
-                className="rounded-xl border border-line px-3 py-1.5 text-white/80 hover:text-white hover:border-white/30"
-              >
-                Sign in
-              </Link>
-              <Link href="/auth/register" className="btn-neon">
-                Register
-              </Link>
-            </>
-          )}
-          <button
-            onClick={toggle}
-            className="relative rounded-xl border border-line px-3 py-1.5 text-white/80 hover:text-white hover:border-white/30"
-          >
-            Cart
-            <span className="absolute -right-2 -top-2 text-[10px] bg-neon.pink text-bg rounded-full px-1.5">
-              {count}
-            </span>
-          </button>
+        <div className="flex gap-4">
+          {navItems.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`px-3 py-2 rounded-md text-sm transition 
+                ${
+                  pathname === href
+                    ? "bg-white/10 text-white"
+                    : "text-white/70 hover:text-white hover:bg-white/5"
+                }`}
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
-    </header>
+
+      <div className="flex items-center gap-3">
+        {/* Cart Button */}
+        <button
+          onClick={toggle}
+          className="relative px-3 py-2 rounded-md text-sm bg-white/5 text-white/80 hover:bg-white/10"
+        >
+          Cart
+          {count > 0 && (
+            <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {count}
+            </span>
+          )}
+        </button>
+
+        {authed ? (
+          <>
+            <span className="text-white/80 text-sm">
+              Welcome, {name || "User"}!
+            </span>
+            <button
+              onClick={signOut}
+              className="px-3 py-2 rounded-md text-sm bg-red-500/20 text-red-300 hover:bg-red-500/30"
+            >
+              Sign out
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/auth/login"
+              className="px-3 py-2 rounded-md text-sm bg-white/5 text-white/80 hover:bg-white/10"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/auth/register"
+              className="px-3 py-2 rounded-md text-sm bg-gradient-to-r from-pink-500 to-purple-600 text-white"
+            >
+              Register
+            </Link>
+          </>
+        )}
+      </div>
+    </nav>
   );
 }

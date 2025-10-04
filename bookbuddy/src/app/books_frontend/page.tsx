@@ -1,10 +1,8 @@
-// src/app/books_frontend/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import MangaCard from "@/components/MangaCard";
-import PillTabs from "@/components/PillTabs";
 import SectionHeader from "@/components/SectionHeader";
 import HScroll from "@/components/HScroll";
 
@@ -45,11 +43,13 @@ export default function BooksFrontendPage() {
     };
   }, [q]); // 🔁 refetch when q changes
 
+  // collect all unique genres
   const allTags = useMemo(
     () => Array.from(new Set(books.map((b) => b.genre || "Manga"))).sort(),
     [books]
   );
 
+  // filter books by category
   const filtered = useMemo(
     () => books.filter((b) => (b.genre || "Manga") === cat),
     [books, cat]
@@ -62,12 +62,22 @@ export default function BooksFrontendPage() {
         subtitle={q ? `Results for “${q}”` : "Data from MongoDB"}
       />
 
-      <div className="max-w-xl">
-        <PillTabs
-          items={allTags.length ? allTags : ["Manga"]}
-          value={cat}
-          onChange={setCat}
-        />
+      {/* ✅ Rectangular category buttons */}
+      <div className="flex flex-wrap gap-3">
+        {(allTags.length ? allTags : ["Manga"]).map((tag) => (
+          <button
+            key={tag}
+            onClick={() => setCat(tag)}
+            className={`px-4 py-2 border rounded-md text-sm transition 
+              ${
+                cat === tag
+                  ? "bg-purple-600 text-white border-purple-600"
+                  : "bg-white/5 text-white/80 border-white/10 hover:bg-white/10"
+              }`}
+          >
+            {tag}
+          </button>
+        ))}
       </div>
 
       {loading ? (
@@ -85,6 +95,7 @@ export default function BooksFrontendPage() {
         </p>
       ) : (
         <>
+          {/* 🔥 Horizontal scroll section */}
           <HScroll>
             {books.slice(0, 12).map((b) => (
               <MangaCard
@@ -98,6 +109,7 @@ export default function BooksFrontendPage() {
             ))}
           </HScroll>
 
+          {/* 🔥 Grid section */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {filtered.map((b) => (
               <MangaCard
