@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get("orderId");
@@ -106,5 +106,23 @@ export default function CheckoutSuccessPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-2xl mx-auto text-center py-12">
+          <div className="animate-pulse space-y-6">
+            <div className="w-24 h-24 rounded-full bg-white/10 mx-auto"></div>
+            <div className="h-8 bg-white/10 rounded w-64 mx-auto"></div>
+            <div className="h-4 bg-white/10 rounded w-48 mx-auto"></div>
+          </div>
+        </div>
+      }
+    >
+      <SuccessContent />
+    </Suspense>
   );
 }
