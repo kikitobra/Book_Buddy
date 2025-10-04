@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   // Fix: explicitly set the tracing root so Next doesn't infer the workspace root
   outputFileTracingRoot: path.resolve(__dirname),
 
+  // Base path for deployment
+  basePath: "/bookbuddy",
+  assetPrefix: "/bookbuddy",
+
   // ✅ Allow external book images from Google Books (and other possible sources)
   images: {
     remotePatterns: [
