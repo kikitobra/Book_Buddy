@@ -7,8 +7,8 @@ import { currency } from "@/lib/utils";
 export default function CartPage() {
   const { items, total, remove, clear, inc, dec, updateQty } = useCart();
 
-  const shipping = items.length ? 2.99 : 0;   // demo flat rate
-  const grand    = total + shipping;
+  const shipping = items.length ? 2.99 : 0; // demo flat rate
+  const grand = total + shipping;
 
   return (
     <div className="grid lg:grid-cols-3 gap-8">
@@ -18,31 +18,62 @@ export default function CartPage() {
         {items.length === 0 ? (
           <div className="glass border border-line rounded-2xl p-8">
             <p className="text-white/70">Your cart is empty.</p>
-            <Link href="/books_frontend" className="inline-block mt-4 btn-neon">Browse catalog</Link>
+            <Link href="/books_frontend" className="inline-block mt-4 btn-neon">
+              Browse catalog
+            </Link>
           </div>
         ) : (
           <div className="space-y-3">
             {items.map((it) => (
-              <div key={it.id} className="glass border border-line rounded-2xl p-3 flex items-center gap-4">
-                <img src={it.cover} alt="" className="h-24 w-18 object-cover rounded" />
+              <div
+                key={it.id}
+                className="glass border border-line rounded-2xl p-3 flex items-center gap-4"
+              >
+                <img
+                  src={it.cover}
+                  alt=""
+                  className="h-24 w-18 object-cover rounded"
+                />
                 <div className="flex-1">
                   <p className="font-medium">{it.title}</p>
                   <div className="mt-2 flex items-center gap-2">
-                    <button onClick={() => dec(it.id)} className="h-7 w-7 rounded border border-line text-white/80">−</button>
+                    <button
+                      onClick={() => dec(it.id)}
+                      className="h-7 w-7 rounded border border-line text-white/80"
+                    >
+                      −
+                    </button>
                     <input
                       type="number"
                       value={it.qty}
                       min={1}
-                      onChange={(e) => updateQty(it.id, Math.max(1, parseInt(e.target.value || "1", 10)))}
+                      onChange={(e) =>
+                        updateQty(
+                          it.id,
+                          Math.max(1, parseInt(e.target.value || "1", 10))
+                        )
+                      }
                       className="h-7 w-14 text-center rounded border border-line bg-panel text-white"
                     />
-                    <button onClick={() => inc(it.id)} className="h-7 w-7 rounded border border-line text-white/80">+</button>
-                    <span className="ml-4 text-sm text-white/60">@ {currency(it.price)}</span>
+                    <button
+                      onClick={() => inc(it.id)}
+                      className="h-7 w-7 rounded border border-line text-white/80"
+                    >
+                      +
+                    </button>
+                    <span className="ml-4 text-sm text-white/60">
+                      @ {currency(it.price)}
+                    </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-semibold">{currency(it.qty * it.price)}</div>
-                  <button onClick={() => remove(it.id)} className="text-xs underline text-white/70 hover:text-white mt-1">
+                  <div className="font-semibold">
+                    {currency(it.qty * it.price)}
+                  </div>
+                  <button
+                    onClick={() => remove(it.id)}
+                    className="text-xs underline text-white/70 hover:text-white mt-1"
+                  >
                     Remove
                   </button>
                 </div>
@@ -50,8 +81,18 @@ export default function CartPage() {
             ))}
 
             <div className="flex gap-2">
-              <Link href="/books_frontend" className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white">Continue shopping</Link>
-              <button onClick={clear} className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white">Clear cart</button>
+              <Link
+                href="/books_frontend"
+                className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white"
+              >
+                Continue shopping
+              </Link>
+              <button
+                onClick={clear}
+                className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white"
+              >
+                Clear cart
+              </button>
             </div>
           </div>
         )}
@@ -73,11 +114,16 @@ export default function CartPage() {
             <span className="font-semibold">Total</span>
             <span className="font-semibold">{currency(grand)}</span>
           </div>
-          <button className="btn-neon w-full">Checkout</button>
+          <Link href="/checkout" className="btn-neon w-full block text-center">
+            Proceed to Checkout
+          </Link>
         </div>
 
         <div className="glass border border-line rounded-2xl p-4 text-sm text-white/70">
-          <p>Shipping in 2–4 days within TH. Secure payments with cards & wallets.</p>
+          <p>
+            Shipping in 2–4 days within TH. Secure payments with cards &
+            wallets.
+          </p>
         </div>
       </aside>
     </div>

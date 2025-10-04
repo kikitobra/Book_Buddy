@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import WishlistButton from "@/components/WishlistButton";
+import { useCart } from "@/context/CartContext";
 
 type BookDoc = {
   _id?: string;
@@ -57,6 +58,7 @@ export default function BookDetail({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const { add } = useCart();
   const [book, setBook] = useState<BookDoc | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -160,15 +162,23 @@ export default function BookDetail({
         </p>
 
         <div className="rounded-2xl glass border border-line p-4 space-y-3">
-          <form action="/cart" method="POST">
-            <input type="hidden" name="id" value={String(book._id)} />
-            <input type="hidden" name="title" value={book.title} />
-            <input type="hidden" name="cover" value={book.cover_url} />
-            <input type="hidden" name="priceTHB" value={priceTHB} />
-            <button className="btn-neon w-full" type="submit">
-              Add to cart
-            </button>
-          </form>
+          <button
+            onClick={() => {
+              add({
+                id: String(book._id),
+                title: book.title,
+                price: priceTHB,
+                qty: 1,
+                cover: imageSrc,
+              });
+              // Optional: Show a toast notification or feedback
+              alert(`Added "${book.title}" to cart!`);
+            }}
+            className="btn-neon w-full"
+            disabled={book.quantity <= 0}
+          >
+            {book.quantity > 0 ? "Add to cart" : "Out of Stock"}
+          </button>
 
           {/* Wishlist Button */}
           <WishlistButton bookId={String(book._id)} className="w-full" />

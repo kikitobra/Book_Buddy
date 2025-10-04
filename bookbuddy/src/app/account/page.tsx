@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { clearSession, getToken, getUser, isAuthed, saveSession } from "@/lib/auth";
-import { orders } from "@/data/orders";
 import { currency } from "@/lib/utils";
 
 type Address = {
@@ -32,6 +30,24 @@ function saveAddress(addr: Address) {
   localStorage.setItem(ADDRESS_KEY, JSON.stringify(addr));
 }
 
+type Order = {
+  _id: string;
+  orderId: string;
+  userId: string;
+  items: Array<{
+    bookId: string;
+    title: string;
+    quantity: number;
+    price: number;
+    cover: string;
+  }>;
+  shippingAddress: Address;
+  total: number;
+  paymentMethod: string;
+  status: string;
+  createdAt: string;
+};
+
 export default function AccountPage() {
   const router = useRouter();
   const [tab, setTab] = useState<"profile" | "orders" | "address">("profile");
@@ -40,6 +56,10 @@ export default function AccountPage() {
   // User state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+
+  // Orders state
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   // Address state
   const [addr, setAddr] = useState<Address>({
@@ -54,26 +74,51 @@ export default function AccountPage() {
 
   // Guard: redirect to login if not authenticated
   useEffect(() => {
-    if (!isAuthed()) {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
       router.replace(`/auth/login?next=/account`);
       return;
     }
-    const u = getUser();
-    if (u) {
-      setName(u.name || "");
-      setEmail(u.email || "");
-    }
+
+    // Load user from localStorage
+    const userName = localStorage.getItem("user_name");
+    const userEmail = localStorage.getItem("user_email");
+    if (userName) setName(userName);
+    if (userEmail) setEmail(userEmail);
+
     const a = loadAddress();
     if (a) setAddr(a);
+
+    // Fetch orders
+    fetchOrders(token);
   }, [router]);
 
-  const orderCount = useMemo(() => orders.length, []);
+  const fetchOrders = async (token: string) => {
+    setOrdersLoading(true);
+    try {
+      const res = await fetch("/api/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setOrders(data.orders);
+      }
+    } catch (e) {
+      console.error("Failed to fetch orders:", e);
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  const orderCount = useMemo(() => orders.length, [orders]);
 
   const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    // If using backend, call PUT /api/users/me here.
-    const token = getToken() || "demo-token";
-    saveSession(token, { name, email });
+    // Save to localStorage
+    localStorage.setItem("user_name", name);
+    localStorage.setItem("user_email", email);
     setNotice("Profile updated.");
     setTimeout(() => setNotice(null), 1500);
   };
@@ -86,7 +131,9 @@ export default function AccountPage() {
   };
 
   const signOut = () => {
-    clearSession();
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
     router.push("/");
     router.refresh();
   };
@@ -101,14 +148,17 @@ export default function AccountPage() {
             Manage your profile, orders, and shipping address.
           </p>
         </div>
-        <button onClick={signOut} className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white hover:border-white/30">
+        <button
+          onClick={signOut}
+          className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white hover:border-white/30"
+        >
           Logout
         </button>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2">
-        {(["profile", "orders", "address"] as const).map(t => (
+        {(["profile", "orders", "address"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -174,7 +224,10 @@ export default function AccountPage() {
 
             <div className="sm:col-span-2 flex gap-3">
               <button className="btn-neon">Save changes</button>
-              <Link href="/books" className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white hover:border-white/30">
+              <Link
+                href="/books"
+                className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white hover:border-white/30"
+              >
                 Continue shopping
               </Link>
             </div>
@@ -188,44 +241,78 @@ export default function AccountPage() {
             <h2 className="font-semibold text-lg">Orders ({orderCount})</h2>
           </div>
 
-          <div className="grid gap-4">
-            {orders.map((o) => (
-              <div key={o.id} className="glass border border-line rounded-2xl p-4">
-                <div className="flex flex-wrap items-center gap-3 justify-between">
-                  <div>
-                    <p className="font-medium">{o.id}</p>
-                    <p className="text-xs text-white/60">
-                      {new Date(o.date).toLocaleString()}
-                    </p>
-                  </div>
-                  <span className={`text-xs px-2 py-1 rounded-full border ${
-                    o.status === "Delivered"
-                      ? "border-neon.mint text-neon.mint"
-                      : o.status === "Shipped"
-                      ? "border-neon.blue text-neon.blue"
-                      : o.status === "Cancelled"
-                      ? "border-red-400 text-red-400"
-                      : "border-white/40 text-white/70"
-                  }`}>
-                    {o.status}
-                  </span>
-                  <div className="font-semibold">{currency(o.total)}</div>
-                </div>
-
-                <div className="mt-3 flex gap-3 overflow-x-auto">
-                  {o.items.map((it) => (
-                    <div key={it.id} className="flex items-center gap-3 rounded-xl border border-line bg-panel p-2">
-                      <img src={it.cover} alt="" className="h-16 w-12 object-cover rounded" />
-                      <div>
-                        <p className="text-sm">{it.title}</p>
-                        <p className="text-xs text-white/60">Qty {it.qty} • {currency(it.price)}</p>
-                      </div>
+          {ordersLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <img
+                src="/Figure-Gif-unscreen.gif"
+                alt="Loading"
+                className="w-24 h-24 object-contain"
+              />
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="glass border border-line rounded-2xl p-8 text-center">
+              <p className="text-white/60">No orders yet</p>
+              <Link
+                href="/books_frontend"
+                className="inline-block mt-4 btn-neon"
+              >
+                Start Shopping
+              </Link>
+            </div>
+          ) : (
+            <div className="grid gap-4">
+              {orders.map((o) => (
+                <div
+                  key={o._id}
+                  className="glass border border-line rounded-2xl p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-3 justify-between">
+                    <div>
+                      <p className="font-medium">{o.orderId}</p>
+                      <p className="text-xs text-white/60">
+                        {new Date(o.createdAt).toLocaleString()}
+                      </p>
                     </div>
-                  ))}
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full border ${
+                        o.status === "Delivered"
+                          ? "border-neon.mint text-neon.mint"
+                          : o.status === "Shipped"
+                          ? "border-neon.blue text-neon.blue"
+                          : o.status === "Cancelled"
+                          ? "border-red-400 text-red-400"
+                          : "border-white/40 text-white/70"
+                      }`}
+                    >
+                      {o.status}
+                    </span>
+                    <div className="font-semibold">{currency(o.total)}</div>
+                  </div>
+
+                  <div className="mt-3 flex gap-3 overflow-x-auto">
+                    {o.items.map((it) => (
+                      <div
+                        key={it.bookId}
+                        className="flex items-center gap-3 rounded-xl border border-line bg-panel p-2"
+                      >
+                        <img
+                          src={it.cover}
+                          alt=""
+                          className="h-16 w-12 object-cover rounded"
+                        />
+                        <div>
+                          <p className="text-sm">{it.title}</p>
+                          <p className="text-xs text-white/60">
+                            Qty {it.quantity} • {currency(it.price)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
 
@@ -237,7 +324,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">Full Name</label>
               <input
                 value={addr.fullName}
-                onChange={e=>setAddr(a=>({ ...a, fullName: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, fullName: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
@@ -245,7 +334,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">Phone</label>
               <input
                 value={addr.phone}
-                onChange={e=>setAddr(a=>({ ...a, phone: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, phone: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
@@ -253,7 +344,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">Street</label>
               <input
                 value={addr.street}
-                onChange={e=>setAddr(a=>({ ...a, street: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, street: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
@@ -261,7 +354,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">City</label>
               <input
                 value={addr.city}
-                onChange={e=>setAddr(a=>({ ...a, city: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, city: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
@@ -269,7 +364,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">State/Province</label>
               <input
                 value={addr.state}
-                onChange={e=>setAddr(a=>({ ...a, state: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, state: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
@@ -277,7 +374,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">Postal Code</label>
               <input
                 value={addr.postal}
-                onChange={e=>setAddr(a=>({ ...a, postal: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, postal: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
@@ -285,7 +384,9 @@ export default function AccountPage() {
               <label className="text-sm text-white/70">Country</label>
               <input
                 value={addr.country}
-                onChange={e=>setAddr(a=>({ ...a, country: e.target.value }))}
+                onChange={(e) =>
+                  setAddr((a) => ({ ...a, country: e.target.value }))
+                }
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
               />
             </div>
