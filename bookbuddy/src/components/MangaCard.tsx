@@ -6,10 +6,10 @@ type Props = {
   href: string;
   title: string;
   author?: string;
-  cover?: string | null; // allow empty/null
+  cover?: string | null;
   badge?: string;
   rank?: number;
-  bookId?: string; // Add bookId for wishlist functionality
+  bookId?: string;
 };
 
 export default function MangaCard({

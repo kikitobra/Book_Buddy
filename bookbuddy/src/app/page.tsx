@@ -52,7 +52,6 @@ export default function HomePage() {
 
   const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  // Simple groupings (tweak as needed)
   const trending = useMemo(() => books.slice(0, 5), [books]);
   const popularByCat = useMemo(
     () => books.filter((b) => (b.genre || "Manga") === cat),

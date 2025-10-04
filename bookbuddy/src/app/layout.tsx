@@ -6,17 +6,26 @@ import CartDrawer from "@/components/CartDrawer";
 import { CartProvider } from "@/context/CartContext";
 
 export const metadata: Metadata = {
-  title: "BookBuddy — English Manga Store",
-  description: "Neon-dark cyber storefront for manga.",
+  title: "BookBuddy",
+  description: "English Manga Store",
+  icons: {
+    icon: "/book_buddy_logo.svg",
+  },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className="min-h-screen text-white bg-bg">
         <CartProvider>
           <NavbarCyber />
-          <main className="max-w-7xl mx-auto px-4 py-8 space-y-12">{children}</main>
+          <main className="max-w-7xl mx-auto px-4 py-8 space-y-12">
+            {children}
+          </main>
           <FooterMinimal />
           <CartDrawer />
         </CartProvider>
