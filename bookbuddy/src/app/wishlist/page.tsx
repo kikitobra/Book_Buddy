@@ -37,7 +37,7 @@ export default function WishlistPage() {
         return;
       }
 
-      const res = await fetch("/api/wishlist", {
+      const res = await fetch(getApiPath("/api/wishlist"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ export default function WishlistPage() {
       const token = localStorage.getItem("auth_token");
       if (!token) return;
 
-      const res = await fetch(`/api/wishlist/${bookId}`, {
+      const res = await fetch(getApiPath(`/api/wishlist/${bookId}`), {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import MangaCard from "@/components/MangaCard";
 import SectionHeader from "@/components/SectionHeader";
 import HScroll from "@/components/HScroll";
+import { getApiPath } from "@/lib/utils";
 
 type BookItem = {
   id: string;
@@ -31,7 +32,7 @@ function BooksCatalog() {
         const url = q
           ? `/api/books?q=${encodeURIComponent(q)}&limit=1000`
           : `/api/books?limit=1000`;
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(getApiPath(url), { cache: "no-store" });
         const data = await res.json();
         if (!cancel && data.ok) setBooks(data.items || []);
       } finally {

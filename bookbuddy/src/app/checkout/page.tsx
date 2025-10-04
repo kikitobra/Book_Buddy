@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { currency } from "@/lib/utils";
+import { currency, getApiPath } from "@/lib/utils";
 
 type Address = {
   fullName: string;
@@ -94,7 +94,7 @@ export default function CheckoutPage() {
       saveAddress(addr);
 
       // Create order
-      const res = await fetch("/api/orders", {
+      const res = await fetch(getApiPath("/api/orders"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

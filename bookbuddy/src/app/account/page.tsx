@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { currency } from "@/lib/utils";
+import { currency, getApiPath } from "@/lib/utils";
 
 type Address = {
   fullName: string;
@@ -96,7 +96,7 @@ export default function AccountPage() {
   const fetchOrders = async (token: string) => {
     setOrdersLoading(true);
     try {
-      const res = await fetch("/api/orders", {
+      const res = await fetch(getApiPath("/api/orders"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },

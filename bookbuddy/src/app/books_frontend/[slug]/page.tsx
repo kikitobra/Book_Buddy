@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import WishlistButton from "@/components/WishlistButton";
 import { useCart } from "@/context/CartContext";
+import { getApiPath } from "@/lib/utils";
 
 type BookDoc = {
   _id?: string;
@@ -68,7 +69,7 @@ export default function BookDetail({
       try {
         // Search by ISBN or title, which should work for most cases
         const res = await fetch(
-          `/api/books?q=${encodeURIComponent(slug)}&limit=1`
+          getApiPath(`/api/books?q=${encodeURIComponent(slug)}&limit=1`)
         );
         const data = await res.json();
 
