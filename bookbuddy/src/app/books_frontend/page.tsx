@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import MangaCard from "@/components/MangaCard";
 import SectionHeader from "@/components/SectionHeader";
@@ -16,7 +16,7 @@ type BookItem = {
   quantity: number;
 };
 
-export default function BooksFrontendPage() {
+function BooksCatalog() {
   const sp = useSearchParams();
   const q = (sp.get("q") || "").trim(); // 🔎 read q from URL
 
@@ -126,5 +126,24 @@ export default function BooksFrontendPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function BooksFrontendPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-12">
+          <img
+            src="/Figure-Gif-unscreen.gif"
+            alt="Loading"
+            className="w-36 h-36 object-contain"
+            aria-busy="true"
+          />
+        </div>
+      }
+    >
+      <BooksCatalog />
+    </Suspense>
   );
 }
