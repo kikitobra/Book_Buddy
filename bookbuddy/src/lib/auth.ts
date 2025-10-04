@@ -1,13 +1,12 @@
 // lib/auth.ts
 import { MongoClient, Collection } from "mongodb";
-import { cookies } from "next/headers";
-import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
+import { SignJWT, jwtVerify } from "jose";
 
-const uri = process.env.MONGODB_URI!;
-const dbName = process.env.MONGODB_DB!;
-const sessionSecret = new TextEncoder().encode(
-  process.env.SESSION_SECRET || "dev_secret_change_me"
+const uri = process.env.MONGODB_URI || process.env.MONGODB_URI!;
+const dbName = process.env.DB_NAME || "booksheet";
+const secret = new TextEncoder().encode(
+  process.env.AUTH_SECRET || "dev-secret-key"
 );
 
 let client: MongoClient | null = null;
@@ -36,37 +35,46 @@ export async function verifyPassword(
   return bcrypt.compare(plain, hash);
 }
 
-/** Create a HTTP-only cookie session with a small JWT */
-export async function setSession(payload: { userId: string; email: string }) {
+// Create JWT token for client-side storage
+export async function createToken(payload: {
+  userId: string;
+  email: string;
+  name: string;
+}) {
   const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(sessionSecret);
+    .sign(secret);
+  return token;
+}
 
-  const c = (await cookies()) as any;
-  c.set("session", token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  });
+// Verify JWT token
+export async function verifyToken(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return {
+      userId: String(payload.userId),
+      email: String(payload.email),
+      name: String(payload.name),
+    };
+  } catch {
+    return null;
+  }
 }
+
+// Placeholder functions for compatibility
+export async function setSession(payload: { userId: string; email: string }) {
+  return { success: true, userId: payload.userId, email: payload.email };
+}
+
 export async function clearSession() {
-  const c = (await cookies()) as any;
-  c.set("session", "", { httpOnly: true, maxAge: 0, path: "/" });
+  return { success: true };
 }
+
 export async function getSession(): Promise<{
   userId: string;
   email: string;
 } | null> {
-  const cookie = (await cookies()).get("session");
-  if (!cookie?.value) return null;
-  try {
-    const { payload } = await jwtVerify(cookie.value, sessionSecret);
-    return { userId: String(payload.userId), email: String(payload.email) };
-  } catch {
-    return null;
-  }
+  return null;
 }

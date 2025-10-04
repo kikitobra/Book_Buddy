@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { usersCollection, verifyPassword, setSession } from "@/lib/auth";
+import { usersCollection, verifyPassword, createToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,8 +39,18 @@ export async function POST(req: NextRequest) {
       { $set: { failed_login_attempts: 0, updated_at: new Date() } }
     );
 
-    await setSession({ userId: String(user._id), email: user.email });
-    return NextResponse.json({ ok: true });
+    // Create JWT token for client-side storage
+    const token = await createToken({ 
+      userId: String(user._id), 
+      email: user.email,
+      name: user.name 
+    });
+
+    return NextResponse.json({ 
+      ok: true, 
+      token,
+      user: { name: user.name, email: user.email }
+    });
   } catch (e: any) {
     return NextResponse.json(
       { ok: false, error: e?.message || "Login failed" },

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { usersCollection, hashPassword, setSession } from "@/lib/auth";
+import { usersCollection, hashPassword, createToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,10 +41,21 @@ export async function POST(req: NextRequest) {
     };
 
     const res = await users.insertOne(doc as any);
-    await setSession({ userId: String(res.insertedId), email: doc.email });
+
+    // Create JWT token for client-side storage
+    const token = await createToken({
+      userId: String(res.insertedId),
+      email: doc.email,
+      name: doc.name,
+    });
 
     return NextResponse.json(
-      { ok: true, id: String(res.insertedId) },
+      {
+        ok: true,
+        id: String(res.insertedId),
+        token,
+        user: { name: doc.name, email: doc.email },
+      },
       { status: 201 }
     );
   } catch (e: any) {

@@ -30,30 +30,90 @@ export default function NavbarCyber() {
 
   useEffect(() => {
     let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
-        const data = await res.json();
-        if (!mounted) return;
-        if (data.ok && data.authed) {
-          setAuthed(true);
-          setName(data.user?.name || null);
-        } else {
+
+    const checkAuth = async () => {
+      // Check localStorage first for immediate UI update
+      const token = localStorage.getItem("auth_token");
+      const userName = localStorage.getItem("user_name");
+
+      if (token) {
+        setAuthed(true);
+        setName(userName);
+
+        // Then verify with server
+        try {
+          const res = await fetch("/api/auth/me", {
+            cache: "no-store",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const data = await res.json();
+          if (!mounted) return;
+
+          if (data.ok && data.authed) {
+            setAuthed(true);
+            setName(data.user?.name || userName);
+            // Update localStorage with fresh data
+            if (data.user?.name) {
+              localStorage.setItem("user_name", data.user.name);
+            }
+          } else {
+            // Token is invalid, clear localStorage
+            setAuthed(false);
+            setName(null);
+            localStorage.removeItem("auth_token");
+            localStorage.removeItem("user_name");
+            localStorage.removeItem("user_email");
+          }
+        } catch (e) {
+          if (mounted) {
+            setAuthed(false);
+            setName(null);
+          }
+        }
+      } else {
+        if (mounted) {
           setAuthed(false);
           setName(null);
         }
-      } catch (e) {
-        setAuthed(false);
-        setName(null);
       }
-    })();
+    };
+
+    checkAuth();
+
+    // Listen for auth state changes
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener("authStateChanged", handleAuthChange);
+
+    return () => {
+      mounted = false;
+      window.removeEventListener("authStateChanged", handleAuthChange);
+    };
   }, []);
 
   const signOut = () => {
+    // Clear localStorage immediately for instant UI update
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
+    setAuthed(false);
+    setName(null);
+
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent("authStateChanged"));
+
+    // Call logout endpoint (optional, since we're using stateless auth)
     (async () => {
-      await fetch("/api/auth/logout", { method: "POST" });
-      setAuthed(false);
-      setName(null);
+      try {
+        await fetch("/api/auth/logout", { method: "POST" });
+      } catch (e) {
+        // Ignore logout errors since we already cleared localStorage
+      }
+      router.push("/");
       router.refresh();
     })();
   };
