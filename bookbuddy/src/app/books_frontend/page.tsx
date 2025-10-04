@@ -105,6 +105,7 @@ export default function BooksFrontendPage() {
                 author={b.author}
                 cover={b.cover}
                 badge={b.quantity > 0 ? "IN STOCK" : undefined}
+                bookId={b.id}
               />
             ))}
           </HScroll>
@@ -118,6 +119,7 @@ export default function BooksFrontendPage() {
                 title={b.title}
                 author={b.author}
                 cover={b.cover}
+                bookId={b.id}
               />
             ))}
           </div>

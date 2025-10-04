@@ -23,8 +23,8 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const q = (url.searchParams.get("q") || "").trim();
     const tag = (url.searchParams.get("tag") || "").trim();
-    const limit = Math.min( +url.searchParams.get("limit")! || 50, 200);
-    const offset = Math.max( +url.searchParams.get("offset")! || 0, 0);
+    const limit = Math.min(+url.searchParams.get("limit")! || 50, 200);
+    const offset = Math.max(+url.searchParams.get("offset")! || 0, 0);
 
     const col = await getCollection<BookDoc>(
       process.env.COLLECTION_NAME || "book_inventory"
@@ -37,19 +37,26 @@ export async function GET(req: Request) {
       ...(q
         ? {
             $or: [
-              { title:   { $regex: q, $options: "i" } },
-              { author:  { $regex: q, $options: "i" } },
-              { isbn:    { $regex: q, $options: "i" } },
-              { genre:   { $regex: q, $options: "i" } },
+              { title: { $regex: q, $options: "i" } },
+              { author: { $regex: q, $options: "i" } },
+              { isbn: { $regex: q, $options: "i" } },
+              { genre: { $regex: q, $options: "i" } },
             ],
           }
         : {}),
     };
 
     const cursor = col
-      .find(filter, { projection: {
-        title: 1, author: 1, isbn: 1, genre: 1, quantity: 1, cover_url: 1
-      }})
+      .find(filter, {
+        projection: {
+          title: 1,
+          author: 1,
+          isbn: 1,
+          genre: 1,
+          quantity: 1,
+          cover_url: 1,
+        },
+      })
       .sort({ createdAt: -1, _id: -1 })
       .skip(offset)
       .limit(limit);
@@ -64,12 +71,15 @@ export async function GET(req: Request) {
       isbn: d.isbn,
       genre: d.genre ?? "Manga",
       quantity: d.quantity ?? 0,
-      cover: d.cover_url || "/placeholder-cover.png",
+      cover: d.cover_url || "", // Return empty string if no cover, let frontend handle placeholder
     }));
 
     return NextResponse.json({ ok: true, items });
   } catch (err) {
     console.error("GET /api/books failed:", err);
-    return NextResponse.json({ ok: false, error: "Failed to fetch books" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "Failed to fetch books" },
+      { status: 500 }
+    );
   }
 }

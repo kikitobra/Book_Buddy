@@ -107,6 +107,7 @@ export default function HomePage() {
                   author={b.author}
                   cover={b.cover}
                   rank={i + 1}
+                  bookId={b.id}
                 />
               ))}
             </HScroll>
@@ -123,6 +124,7 @@ export default function HomePage() {
                   title={b.title}
                   author={b.author}
                   cover={b.cover}
+                  bookId={b.id}
                 />
               ))}
             </div>
@@ -140,6 +142,7 @@ export default function HomePage() {
                   author={b.author}
                   cover={b.cover}
                   badge="NEW"
+                  bookId={b.id}
                 />
               ))}
             </HScroll>
@@ -162,6 +165,7 @@ export default function HomePage() {
                   title={b.title}
                   author={b.author}
                   cover={b.cover}
+                  bookId={b.id}
                 />
               ))}
             </div>

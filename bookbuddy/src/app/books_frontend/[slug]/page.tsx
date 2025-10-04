@@ -1,11 +1,12 @@
+"use client";
+
+import { useEffect, useState, use } from "react";
 import { notFound } from "next/navigation";
-import { getCollection } from "@/lib/mongodb";
-import type { ObjectId, Filter } from "mongodb";
-import { ObjectId as OID } from "mongodb";
 import Image from "next/image";
+import WishlistButton from "@/components/WishlistButton";
 
 type BookDoc = {
-  _id?: ObjectId;
+  _id?: string;
   title: string;
   isbn: string;
   author: string;
@@ -18,8 +19,6 @@ type BookDoc = {
   createdAt?: Date;
   updatedAt?: Date;
 };
-
-export const dynamic = "force-dynamic";
 
 // ---- helpers ----
 function seededRandInt(min: number, max: number, seed: string) {
@@ -52,37 +51,74 @@ function formatTHB(amount: number) {
   }
 }
 
-async function findBook(slug: string) {
-  const col = await getCollection<BookDoc>(
-    process.env.COLLECTION_NAME || "book_inventory"
-  );
-
-  const byIsbn = await col.findOne({
-    isbn: slug,
-    language: "en",
-  } as Filter<BookDoc>);
-  if (byIsbn) return byIsbn;
-
-  if (OID.isValid(slug)) {
-    const byId = await col.findOne({ _id: new OID(slug) } as Filter<BookDoc>);
-    if (byId) return byId;
-  }
-  return null;
-}
-
-export default async function BookDetail({
+export default function BookDetail({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const book = await findBook(slug);
-  if (!book) return notFound();
+  const { slug } = use(params);
+  const [book, setBook] = useState<BookDoc | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        // Search by ISBN or title, which should work for most cases
+        const res = await fetch(
+          `/api/books?q=${encodeURIComponent(slug)}&limit=1`
+        );
+        const data = await res.json();
+
+        if (data.ok && data.items && data.items.length > 0) {
+          // Convert MongoDB _id to string for consistency
+          const bookData = data.items[0];
+          setBook({
+            ...bookData,
+            _id: bookData._id?.toString() || bookData.id,
+            cover_url: bookData.cover || bookData.cover_url, // Map 'cover' to 'cover_url'
+          });
+        } else {
+          setError("Book not found");
+        }
+      } catch (e) {
+        setError("Failed to load book");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBook();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <img
+          src="/Figure-Gif-unscreen.gif"
+          alt="Loading"
+          className="w-36 h-36 object-contain"
+          aria-busy="true"
+        />
+      </div>
+    );
+  }
+
+  if (error || !book) {
+    return (
+      <div className="text-center py-12">
+        <h1 className="text-2xl font-bold text-red-400 mb-4">Book Not Found</h1>
+        <p className="text-white/80">
+          {error || "The requested book could not be found."}
+        </p>
+      </div>
+    );
+  }
 
   const imageSrc =
     book.cover_url && book.cover_url.trim()
       ? book.cover_url
-      : "/placeholder-cover.png";
+      : "/placeholder-cover.svg";
 
   const priceTHB = derivePriceTHB(book);
   const priceText = formatTHB(priceTHB);
@@ -123,8 +159,8 @@ export default async function BookDetail({
           {book.summary || "No description."}
         </p>
 
-        <div className="rounded-2xl glass border border-line p-4">
-          <form action="/cart" method="POST" className="space-y-2">
+        <div className="rounded-2xl glass border border-line p-4 space-y-3">
+          <form action="/cart" method="POST">
             <input type="hidden" name="id" value={String(book._id)} />
             <input type="hidden" name="title" value={book.title} />
             <input type="hidden" name="cover" value={book.cover_url} />
@@ -133,6 +169,9 @@ export default async function BookDetail({
               Add to cart
             </button>
           </form>
+
+          {/* Wishlist Button */}
+          <WishlistButton bookId={String(book._id)} className="w-full" />
         </div>
       </div>
     </div>

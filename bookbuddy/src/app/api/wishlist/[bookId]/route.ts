@@ -6,10 +6,10 @@ import { ObjectId } from "mongodb";
 // DELETE - Remove item from wishlist
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { bookId: string } }
+  { params }: { params: Promise<{ bookId: string }> }
 ) {
   try {
-    const { bookId } = params;
+    const { bookId } = await params;
 
     if (!bookId) {
       return NextResponse.json(

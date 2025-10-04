@@ -22,7 +22,7 @@ export default function MangaCard({
   bookId,
 }: Props) {
   // ✅ never pass empty string to <img src>
-  const safeCover = cover && cover.trim() ? cover : "/placeholder-cover.png";
+  const safeCover = cover && cover.trim() ? cover : "/placeholder-cover.svg";
 
   return (
     <div className="group w-52 shrink-0 rounded-2xl glass border border-line overflow-hidden">
