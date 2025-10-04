@@ -1,8 +1,8 @@
-// src/app/books_frontend/[slug]/page.tsx
 import { notFound } from "next/navigation";
-import { getCollection } from "@/lib/mongodb"; // or "../../../lib/mongodb"
+import { getCollection } from "@/lib/mongodb";
 import type { ObjectId, Filter } from "mongodb";
 import { ObjectId as OID } from "mongodb";
+import Image from "next/image";
 
 type BookDoc = {
   _id?: ObjectId;
@@ -23,24 +23,21 @@ export const dynamic = "force-dynamic";
 
 // ---- helpers ----
 function seededRandInt(min: number, max: number, seed: string) {
-  // simple, stable hash → int
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
   h = Math.abs(h);
   return min + (h % (max - min + 1));
 }
 
-// Reasonable manga price band in THB (paperback): 180–420.
-// We round to nearest 10 and add a tiny “content factor” for longer descriptions.
 function derivePriceTHB(book: Pick<BookDoc, "isbn" | "_id" | "summary">) {
   const seed = book.isbn || String(book._id ?? "");
-  const base = seededRandInt(180, 420, seed); // stable per book
+  const base = seededRandInt(180, 420, seed);
   const contentFactor = Math.min(
     1.25,
     1 + (Math.min(2000, book.summary?.length ?? 0) / 2000) * 0.25
   );
   const raw = Math.round((base * contentFactor) / 10) * 10;
-  return raw; // integer THB
+  return raw;
 }
 
 function formatTHB(amount: number) {
@@ -60,14 +57,12 @@ async function findBook(slug: string) {
     process.env.COLLECTION_NAME || "book_inventory"
   );
 
-  // Try by ISBN first (English only)
   const byIsbn = await col.findOne({
     isbn: slug,
     language: "en",
   } as Filter<BookDoc>);
   if (byIsbn) return byIsbn;
 
-  // Fallback: by _id if slug looks like ObjectId
   if (OID.isValid(slug)) {
     const byId = await col.findOne({ _id: new OID(slug) } as Filter<BookDoc>);
     if (byId) return byId;
@@ -75,36 +70,38 @@ async function findBook(slug: string) {
   return null;
 }
 
-// NOTE: in recent Next.js, params may be async in some runtimes.
-// Await it to silence the “sync dynamic APIs” warning.
 export default async function BookDetail({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params; // ✅ await params
-
+  const { slug } = await params;
   const book = await findBook(slug);
   if (!book) return notFound();
 
   const imageSrc =
     book.cover_url && book.cover_url.trim()
       ? book.cover_url
-      : "/placeholder-cover.png"; // avoid empty string src
+      : "/placeholder-cover.png";
 
   const priceTHB = derivePriceTHB(book);
   const priceText = formatTHB(priceTHB);
 
   return (
     <div className="grid lg:grid-cols-2 gap-10">
-      <div className="rounded-3xl overflow-hidden glass border border-line">
-        <img
+      {/* ---------- BOOK IMAGE ---------- */}
+      <div className="flex justify-center items-center bg-gray-900 rounded-3xl overflow-hidden glass border border-line">
+        <Image
           src={imageSrc}
           alt={book.title}
-          className="w-full object-cover aspect-[3/4]"
+          width={400}
+          height={600}
+          className="rounded-2xl object-contain transition-transform duration-300 hover:scale-[1.02]"
+          priority
         />
       </div>
 
+      {/* ---------- BOOK DETAILS ---------- */}
       <div className="space-y-4">
         <h1 className="text-3xl font-bold leading-tight">{book.title}</h1>
         <p className="text-white/70">by {book.author}</p>
@@ -127,7 +124,6 @@ export default async function BookDetail({
         </p>
 
         <div className="rounded-2xl glass border border-line p-4">
-          {/* Replace with your real cart action if you have one */}
           <form action="/cart" method="POST" className="space-y-2">
             <input type="hidden" name="id" value={String(book._id)} />
             <input type="hidden" name="title" value={book.title} />
