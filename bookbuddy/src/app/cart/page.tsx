@@ -18,7 +18,7 @@ export default function CartPage() {
         {items.length === 0 ? (
           <div className="glass border border-line rounded-2xl p-8">
             <p className="text-white/70">Your cart is empty.</p>
-            <Link href="/books" className="inline-block mt-4 btn-neon">Browse catalog</Link>
+            <Link href="/books_frontend" className="inline-block mt-4 btn-neon">Browse catalog</Link>
           </div>
         ) : (
           <div className="space-y-3">
@@ -50,7 +50,7 @@ export default function CartPage() {
             ))}
 
             <div className="flex gap-2">
-              <Link href="/books" className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white">Continue shopping</Link>
+              <Link href="/books_frontend" className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white">Continue shopping</Link>
               <button onClick={clear} className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white">Clear cart</button>
             </div>
           </div>
