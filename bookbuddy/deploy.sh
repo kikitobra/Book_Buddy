@@ -19,7 +19,7 @@ if [ ! -f .env.local ]; then
 fi
 
 echo -e "${YELLOW}📦 Installing dependencies...${NC}"
-pnpm install
+npm install
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Failed to install dependencies${NC}"
@@ -27,7 +27,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo -e "${YELLOW}🏗️  Building Next.js application...${NC}"
-pnpm build
+npm run build
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Build failed${NC}"
