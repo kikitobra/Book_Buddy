@@ -55,6 +55,7 @@ export async function GET(req: Request) {
           genre: 1,
           quantity: 1,
           cover_url: 1,
+          summary: 1,
         },
       })
       .sort({ createdAt: -1, _id: -1 })
@@ -72,6 +73,7 @@ export async function GET(req: Request) {
       genre: d.genre ?? "Manga",
       quantity: d.quantity ?? 0,
       cover: d.cover_url || "", // Return empty string if no cover, let frontend handle placeholder
+      summary: d.summary || "",
     }));
 
     return NextResponse.json({ ok: true, items });
