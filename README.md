@@ -49,3 +49,8 @@ BookBuddy is a Next.js app where users can explore a manga catalog, search by ti
 
 **Cart**
 ![Cart](./screen-shots/bookbuddy-cartpage.png)
+
+## 🔗 Live Demo
+
+Check out the deployed project here:  
+👉 [Website deployed on Azure VM](http://wad-6611201.eastasia.cloudapp.azure.com:3001/bookbuddy)
