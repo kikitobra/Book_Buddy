@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { currency, getApiPath } from "@/lib/utils";
 
@@ -50,8 +50,23 @@ type Order = {
 
 export default function AccountPage() {
   const router = useRouter();
-  const [tab, setTab] = useState<"profile" | "orders" | "address">("profile");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as
+    | "profile"
+    | "orders"
+    | "address"
+    | null;
+  const [tab, setTab] = useState<"profile" | "orders" | "address">(
+    tabParam || "profile"
+  );
   const [notice, setNotice] = useState<string | null>(null);
+
+  // Update tab when URL changes
+  useEffect(() => {
+    if (tabParam && ["profile", "orders", "address"].includes(tabParam)) {
+      setTab(tabParam);
+    }
+  }, [tabParam]);
 
   // User state
   const [name, setName] = useState("");
@@ -274,12 +289,14 @@ export default function AccountPage() {
                       </p>
                     </div>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full border ${
-                        o.status === "Delivered"
-                          ? "border-neon.mint text-neon.mint"
-                          : o.status === "Shipped"
-                          ? "border-neon.blue text-neon.blue"
-                          : o.status === "Cancelled"
+                      className={`text-xs px-2 py-1 rounded-full border capitalize ${
+                        o.status === "delivered"
+                          ? "border-green-400 text-green-400"
+                          : o.status === "shipped"
+                          ? "border-blue-400 text-blue-400"
+                          : o.status === "processing"
+                          ? "border-yellow-400 text-yellow-400"
+                          : o.status === "cancelled"
                           ? "border-red-400 text-red-400"
                           : "border-white/40 text-white/70"
                       }`}
