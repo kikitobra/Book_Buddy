@@ -174,9 +174,21 @@ function AccountPageContent() {
           return;
         }
 
-        // Clear password fields
+        // Clear password fields and show success
         setNewPassword("");
         setConfirmPassword("");
+        setNotice(
+          "Password updated successfully! Please log in again with your new password."
+        );
+
+        // Log out after 2 seconds to force re-login with new password
+        setTimeout(() => {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("user_name");
+          localStorage.removeItem("user_email");
+          window.location.href = "/auth/login";
+        }, 2000);
+        return;
       } catch (err) {
         setNotice("Failed to update password");
         setTimeout(() => setNotice(null), 2000);

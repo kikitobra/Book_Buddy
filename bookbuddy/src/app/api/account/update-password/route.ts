@@ -39,15 +39,32 @@ export async function POST(req: NextRequest) {
     const users = await usersCollection();
     const hashedPassword = await hashPassword(newPassword);
 
+    console.log("Updating password for user:", payload.userId);
+
     const result = await users.updateOne(
       { _id: new ObjectId(payload.userId) },
-      { $set: { password: hashedPassword } }
+      { $set: { password_hash: hashedPassword, updated_at: new Date() } }
     );
+
+    console.log("Password update result:", {
+      matchedCount: result.matchedCount,
+      modifiedCount: result.modifiedCount,
+    });
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { ok: false, error: "User not found" },
+        { status: 404 }
+      );
+    }
 
     if (result.modifiedCount === 0) {
       return NextResponse.json(
-        { ok: false, error: "Failed to update password" },
-        { status: 500 }
+        {
+          ok: false,
+          error: "Password was not changed (same as old password?)",
+        },
+        { status: 400 }
       );
     }
 
