@@ -14,8 +14,6 @@ BookBuddy is a Next.js app where users can explore a manga catalog, search by ti
 
 ### ✨ Key Features
 
-### ✨ Key Features
-
 - 📚 **Catalog & Detail Pages** — Explore manga titles, view covers, authors, descriptions, and categories.
 - 🔍 **Search Functionality** — Quickly find manga by title, author, or genre using a smart search bar.
 - 💖 **Wishlist System** — Save favorite manga for later and manage your personalized reading list.
