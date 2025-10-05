@@ -11,12 +11,15 @@
 BookBuddy is a Next.js app where users can explore a manga catalog, search by title/author/genre, view book details from a database, and add items to a cart/wishlist.  
 
 ### ✨ Key Features
-- 📚 Catalog & detailed manga pages (from MangaDB API)
-- 🔍 Search bar for titles, authors, or genres
-- 🛒 Cart drawer + full cart page
-- 💖 Wishlist system
-- 🔐 Simple login/register demo with JWT
-- 🎨 Modern UI using TailwindCSS + Neon Gradient theme
+### ✨ Key Features
+- 📚 **Catalog & Detail Pages** — Explore manga titles, view covers, authors, descriptions, and categories.
+- 🔍 **Search Functionality** — Quickly find manga by title, author, or genre using a smart search bar.
+- 💖 **Wishlist System** — Save favorite manga for later and manage your personalized reading list.
+- 🛒 **Cart & Buying Process** — Add manga to cart, review your selections, and simulate the checkout process with order summary and total calculation.
+- 🔐 **User Authentication** — Simple login/register flow
+- 🎨 **Modern UI Design** — Responsive dark theme built with TailwindCSS and gradient accents.
+- ☁️ **Database-Backed** — Fetches and displays manga data dynamically from the MangaDB API.
+
 
 
 ## Tech Stack
@@ -33,14 +36,14 @@ BookBuddy is a Next.js app where users can explore a manga catalog, search by ti
 ![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-0078D7?logo=azure-devops&logoColor=white)
 
 **Home**
-![Home](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-homepage.png)
+![Home](./screen_shot/bookbuddy-homepage.png)
 
 **Catalog (Search Results)**
-![Catalog](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-catalog.png)
+![Catalog](./screen_shot/bookbuddy-catalog.png)
 
 **Book Detail**
-![Book Detail](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-bookdetailpage.png)
+![Book Detail](./screen_shot/bookbuddy-bookdetailpage.png)
 
 **Cart**
-![Cart](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-cartpage.png)
+![Cart](./screen_shot/bookbuddy-cartpage.png)
 
