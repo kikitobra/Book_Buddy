@@ -253,7 +253,8 @@ function AccountPageContent() {
         localStorage.removeItem("bb_address");
 
         // Force full page reload to update navbar state
-        window.location.href = "/";
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+        window.location.href = `${basePath}/`;
       } else {
         alert("Failed to delete account: " + data.error);
         setShowDeleteConfirm(false);
