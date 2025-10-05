@@ -48,7 +48,7 @@ type Order = {
   createdAt: string;
 };
 
-export default function AccountPage() {
+function AccountPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab") as
@@ -412,5 +412,23 @@ export default function AccountPage() {
         </section>
       )}
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <img
+            src="/Figure-Gif-unscreen.gif"
+            alt="Loading"
+            className="w-24 h-24 object-contain"
+          />
+        </div>
+      }
+    >
+      <AccountPageContent />
+    </Suspense>
   );
 }
