@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import MangaCard from "@/components/MangaCard";
 import SectionHeader from "@/components/SectionHeader";
 import HScroll from "@/components/HScroll";
-import { getApiPath } from "@/lib/utils";
+import { getApiPath, getAssetPath } from "@/lib/utils";
 
 type BookItem = {
   id: string;
@@ -84,7 +84,7 @@ function BooksCatalog() {
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <img
-            src="/Figure-Gif-unscreen.gif"
+            src={getAssetPath("/Figure-Gif-unscreen.gif")}
             alt="Loading"
             className="w-36 h-36 object-contain"
             aria-busy="true"
@@ -136,7 +136,7 @@ export default function BooksFrontendPage() {
       fallback={
         <div className="flex items-center justify-center py-12">
           <img
-            src="/Figure-Gif-unscreen.gif"
+            src={getAssetPath("/Figure-Gif-unscreen.gif")}
             alt="Loading"
             className="w-36 h-36 object-contain"
             aria-busy="true"

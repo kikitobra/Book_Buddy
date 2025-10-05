@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { currency, getApiPath } from "@/lib/utils";
+import { currency, getApiPath, getAssetPath } from "@/lib/utils";
 
 type Address = {
   fullName: string;
@@ -257,7 +257,7 @@ function AccountPageContent() {
           {ordersLoading ? (
             <div className="flex items-center justify-center py-8">
               <img
-                src="/Figure-Gif-unscreen.gif"
+                src={getAssetPath("/Figure-Gif-unscreen.gif")}
                 alt="Loading"
                 className="w-24 h-24 object-contain"
               />

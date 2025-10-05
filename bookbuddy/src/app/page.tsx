@@ -6,7 +6,7 @@ import HScroll from "@/components/HScroll";
 import MangaCard from "@/components/MangaCard";
 import SearchBooks from "@/components/SearchBooks";
 import { useEffect, useMemo, useState } from "react";
-import { getApiPath } from "@/lib/utils";
+import { getApiPath, getAssetPath } from "@/lib/utils";
 
 type BookItem = {
   id: string;
@@ -86,7 +86,7 @@ export default function HomePage() {
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <img
-            src="/Figure-Gif-unscreen.gif"
+            src={getAssetPath("/Figure-Gif-unscreen.gif")}
             alt="Loading"
             className="w-36 h-36 object-contain"
             aria-busy="true"

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getApiPath } from "@/lib/utils";
+import { getApiPath, getAssetPath } from "@/lib/utils";
 
 type WishlistItem = {
   _id: string;
@@ -91,7 +91,7 @@ export default function WishlistPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center py-12">
             <img
-              src="/Figure-Gif-unscreen.gif"
+              src={getAssetPath("/Figure-Gif-unscreen.gif")}
               alt="Loading"
               className="w-36 h-36 object-contain"
               aria-busy="true"
