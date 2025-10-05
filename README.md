@@ -29,13 +29,13 @@ Key features:
 ![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-0078D7?logo=azure-devops&logoColor=white)
 
 **Home**
-![Home](docs/screenshots/home.png)
+![Home](docs/screenshots/bookbuddy-homepage.png)
 
 **Catalog (Search Results)**
-![Catalog](docs/screenshots/catalog.png)
+![Catalog](docs/screenshots/bookbuddy-catalog.png)
 
 **Book Detail**
-![Book Detail](docs/screenshots/book-detail.png)
+![Book Detail](docs/screenshots/bookbuddy-bookdetailpage.png)
 
 **Cart**
-![Cart](docs/screenshots/cart.png)
+![Cart](docs/screenshots/bookbuddy-cartpage.png)
