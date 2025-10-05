@@ -72,7 +72,7 @@ export async function GET(req: Request) {
       isbn: d.isbn,
       genre: d.genre ?? "Manga",
       quantity: d.quantity ?? 0,
-      cover: d.cover_url || "", // Return empty string if no cover, let frontend handle placeholder
+      cover: d.cover_url || "",
       summary: d.summary || "",
     }));
 

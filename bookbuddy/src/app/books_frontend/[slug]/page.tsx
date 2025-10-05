@@ -122,7 +122,7 @@ export default function BookDetail({
   const imageSrc =
     book.cover_url && book.cover_url.trim()
       ? book.cover_url
-      : "/placeholder-cover.svg";
+      : getAssetPath("/placeholder-cover.svg");
 
   const priceTHB = derivePriceTHB(book);
   const priceText = formatTHB(priceTHB);

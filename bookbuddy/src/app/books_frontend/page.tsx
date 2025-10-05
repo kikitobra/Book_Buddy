@@ -42,7 +42,7 @@ function BooksCatalog() {
     return () => {
       cancel = true;
     };
-  }, [q]); // 🔁 refetch when q changes
+  }, [q]);
 
   // collect all unique genres
   const allTags = useMemo(

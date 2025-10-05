@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { currency } from "@/lib/utils";
+import { currency, getAssetPath } from "@/lib/utils";
 
 export default function CartPage() {
   const { items, total, remove, clear, inc, dec, updateQty } = useCart();
@@ -30,7 +30,7 @@ export default function CartPage() {
                 className="glass border border-line rounded-2xl p-3 flex items-center gap-4"
               >
                 <img
-                  src={it.cover}
+                  src={it.cover && it.cover.trim() ? it.cover : getAssetPath("/placeholder-cover.svg")}
                   alt=""
                   className="h-24 w-18 object-cover rounded"
                 />

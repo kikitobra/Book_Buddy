@@ -125,7 +125,7 @@ export default function NavbarCyber() {
     })();
   };
   const navItems = [
-    { href: "/", label: "Home" }, // ✅ Added Home
+    { href: "/", label: "Home" },
     { href: "/books_frontend", label: "Catalog" },
     { href: "/wishlist", label: "Wishlist" },
     { href: "/cart", label: "Cart" },

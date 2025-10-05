@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { currency } from "@/lib/utils";
+import { currency, getAssetPath } from "@/lib/utils";
 
 export default function CartDrawer() {
   const { isOpen, toggle, items, remove, clear, total, inc, dec } = useCart();
@@ -44,7 +44,11 @@ export default function CartDrawer() {
           {items.map((it) => (
             <div key={it.id} className="flex gap-3 items-center">
               <img
-                src={it.cover}
+                src={
+                  it.cover && it.cover.trim()
+                    ? it.cover
+                    : getAssetPath("/placeholder-cover.svg")
+                }
                 alt=""
                 className="h-16 w-12 object-cover rounded"
               />

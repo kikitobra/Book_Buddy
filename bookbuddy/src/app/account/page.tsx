@@ -287,7 +287,7 @@ function AccountPageContent() {
             <div className="sm:col-span-2 flex gap-3">
               <button className="btn-neon">Save changes</button>
               <Link
-                href="/books"
+                href="/books_frontend"
                 className="rounded-xl border border-line px-4 py-2 text-white/80 hover:text-white hover:border-white/30"
               >
                 Continue shopping
@@ -392,7 +392,7 @@ function AccountPageContent() {
                         className="flex items-center gap-3 rounded-xl border border-line bg-panel p-2"
                       >
                         <img
-                          src={it.cover}
+                          src={it.cover && it.cover.trim() ? it.cover : getAssetPath("/placeholder-cover.svg")}
                           alt=""
                           className="h-16 w-12 object-cover rounded"
                         />

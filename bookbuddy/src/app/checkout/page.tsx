@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { currency, getApiPath } from "@/lib/utils";
+import { currency, getApiPath, getAssetPath } from "@/lib/utils";
 
 type Address = {
   fullName: string;
@@ -290,7 +290,11 @@ export default function CheckoutPage() {
               {items.map((item) => (
                 <div key={item.id} className="flex gap-3">
                   <img
-                    src={item.cover}
+                    src={
+                      item.cover && item.cover.trim()
+                        ? item.cover
+                        : getAssetPath("/placeholder-cover.svg")
+                    }
                     alt=""
                     className="h-16 w-12 object-cover rounded"
                   />

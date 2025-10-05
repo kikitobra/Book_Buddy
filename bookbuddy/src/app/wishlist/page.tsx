@@ -174,7 +174,7 @@ export default function WishlistPage() {
               >
                 <div className="aspect-[3/4] relative">
                   <img
-                    src={item.book.cover || "/placeholder-cover.svg"}
+                    src={item.book.cover && item.book.cover.trim() ? item.book.cover : getAssetPath("/placeholder-cover.svg")}
                     alt={item.book.title}
                     className="w-full h-full object-cover"
                   />
