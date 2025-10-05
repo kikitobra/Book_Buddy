@@ -186,7 +186,8 @@ function AccountPageContent() {
           localStorage.removeItem("auth_token");
           localStorage.removeItem("user_name");
           localStorage.removeItem("user_email");
-          window.location.href = "/auth/login";
+          const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+          window.location.href = `${basePath}/auth/login`;
         }, 2000);
         return;
       } catch (err) {
