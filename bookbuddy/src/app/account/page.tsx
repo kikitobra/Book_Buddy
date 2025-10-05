@@ -60,6 +60,8 @@ function AccountPageContent() {
     tabParam || "profile"
   );
   const [notice, setNotice] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (tabParam && ["profile", "orders", "address"].includes(tabParam)) {
@@ -150,6 +152,53 @@ function AccountPageContent() {
     localStorage.removeItem("user_email");
     router.push("/");
     router.refresh();
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        alert("You must be logged in to delete your account");
+        setShowDeleteConfirm(false);
+        setIsDeleting(false);
+        return;
+      }
+
+      const res = await fetch(getApiPath("/api/account/delete"), {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (data.ok) {
+        // Clear local storage
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user_name");
+        localStorage.removeItem("user_email");
+        localStorage.removeItem("bb_address");
+
+        // Force full page reload to update navbar state
+        window.location.href = "/";
+      } else {
+        alert("Failed to delete account: " + data.error);
+        setShowDeleteConfirm(false);
+      }
+    } catch (err) {
+      console.error("Delete account error:", err);
+      alert("Failed to delete account. Please try again.");
+      setShowDeleteConfirm(false);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -245,6 +294,38 @@ function AccountPageContent() {
               </Link>
             </div>
           </form>
+
+          {/* Danger Zone - Delete Account */}
+          <div className="mt-8 pt-6 border-t border-red-500/20">
+            <h3 className="text-red-400 font-semibold mb-2">Danger Zone</h3>
+            <p className="text-sm text-white/60 mb-4">
+              Once you delete your account, there is no going back. This will
+              permanently delete your account.
+            </p>
+            <button
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className={`px-4 py-2 rounded-xl border transition-all ${
+                showDeleteConfirm
+                  ? "bg-red-600 border-red-600 text-white hover:bg-red-700"
+                  : "border-red-500/50 text-red-400 hover:bg-red-500/10"
+              } ${isDeleting ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {isDeleting
+                ? "Deleting..."
+                : showDeleteConfirm
+                ? "Click again to confirm deletion"
+                : "Delete Account"}
+            </button>
+            {showDeleteConfirm && (
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="ml-3 px-4 py-2 rounded-xl border border-line text-white/60 hover:text-white"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </section>
       )}
 

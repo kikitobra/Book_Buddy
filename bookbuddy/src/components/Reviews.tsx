@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getApiPath } from "@/lib/utils";
+import { getApiPath, getAssetPath } from "@/lib/utils";
 
 type Review = {
   _id: string;
@@ -145,7 +145,7 @@ export default function Reviews({ bookId }: ReviewsProps) {
     return (
       <div className="flex items-center justify-center py-8">
         <img
-          src="/Figure-Gif-unscreen.gif"
+          src={getAssetPath("/Figure-Gif-unscreen.gif")}
           alt="Loading"
           className="w-16 h-16 object-contain"
         />
