@@ -6,6 +6,7 @@ import Image from "next/image";
 import WishlistButton from "@/components/WishlistButton";
 import { useCart } from "@/context/CartContext";
 import { getApiPath } from "@/lib/utils";
+import Reviews from "@/components/Reviews";
 
 type BookDoc = {
   _id?: string;
@@ -127,63 +128,72 @@ export default function BookDetail({
   const priceText = formatTHB(priceTHB);
 
   return (
-    <div className="grid lg:grid-cols-2 gap-10">
-      {/* ---------- BOOK IMAGE ---------- */}
-      <div className="flex justify-center items-center bg-gray-900 rounded-3xl overflow-hidden glass border border-line">
-        <Image
-          src={imageSrc}
-          alt={book.title}
-          width={400}
-          height={600}
-          className="rounded-2xl object-contain transition-transform duration-300 hover:scale-[1.02]"
-          priority
-        />
+    <div className="space-y-12">
+      <div className="grid lg:grid-cols-2 gap-10">
+        {/* ---------- BOOK IMAGE ---------- */}
+        <div className="flex justify-center items-center bg-gray-900 rounded-3xl overflow-hidden glass border border-line">
+          <Image
+            src={imageSrc}
+            alt={book.title}
+            width={400}
+            height={600}
+            className="rounded-2xl object-contain transition-transform duration-300 hover:scale-[1.02]"
+            priority
+          />
+        </div>
+
+        {/* ---------- BOOK DETAILS ---------- */}
+        <div className="space-y-4">
+          <h1 className="text-3xl font-bold leading-tight">{book.title}</h1>
+          <p className="text-white/70">by {book.author}</p>
+
+          <div className="flex flex-wrap items-center gap-3 text-sm text-white/70">
+            <span>ISBN: {book.isbn}</span>
+            <span>•</span>
+            <span>Genre: {book.genre ?? "Manga"}</span>
+            <span>•</span>
+            <span>
+              Stock:{" "}
+              {book.quantity > 0
+                ? `${book.quantity} available`
+                : "Out of stock"}
+            </span>
+          </div>
+
+          <div className="text-2xl font-semibold">{priceText}</div>
+
+          <p className="text-white/80 whitespace-pre-wrap">
+            {book.summary || "No description."}
+          </p>
+
+          <div className="rounded-2xl glass border border-line p-4 space-y-3">
+            <button
+              onClick={() => {
+                add({
+                  id: String(book._id),
+                  title: book.title,
+                  price: priceTHB,
+                  qty: 1,
+                  cover: imageSrc,
+                });
+                // Optional: Show a toast notification or feedback
+                alert(`Added "${book.title}" to cart!`);
+              }}
+              className="btn-neon w-full"
+              disabled={book.quantity <= 0}
+            >
+              {book.quantity > 0 ? "Add to cart" : "Out of Stock"}
+            </button>
+
+            {/* Wishlist Button */}
+            <WishlistButton bookId={String(book._id)} className="w-full" />
+          </div>
+        </div>
       </div>
 
-      {/* ---------- BOOK DETAILS ---------- */}
-      <div className="space-y-4">
-        <h1 className="text-3xl font-bold leading-tight">{book.title}</h1>
-        <p className="text-white/70">by {book.author}</p>
-
-        <div className="flex flex-wrap items-center gap-3 text-sm text-white/70">
-          <span>ISBN: {book.isbn}</span>
-          <span>•</span>
-          <span>Genre: {book.genre ?? "Manga"}</span>
-          <span>•</span>
-          <span>
-            Stock:{" "}
-            {book.quantity > 0 ? `${book.quantity} available` : "Out of stock"}
-          </span>
-        </div>
-
-        <div className="text-2xl font-semibold">{priceText}</div>
-
-        <p className="text-white/80 whitespace-pre-wrap">
-          {book.summary || "No description."}
-        </p>
-
-        <div className="rounded-2xl glass border border-line p-4 space-y-3">
-          <button
-            onClick={() => {
-              add({
-                id: String(book._id),
-                title: book.title,
-                price: priceTHB,
-                qty: 1,
-                cover: imageSrc,
-              });
-              // Optional: Show a toast notification or feedback
-              alert(`Added "${book.title}" to cart!`);
-            }}
-            className="btn-neon w-full"
-            disabled={book.quantity <= 0}
-          >
-            {book.quantity > 0 ? "Add to cart" : "Out of Stock"}
-          </button>
-
-          {/* Wishlist Button */}
-          <WishlistButton bookId={String(book._id)} className="w-full" />
-        </div>
+      {/* Reviews Section */}
+      <div className="mt-12">
+        <Reviews bookId={String(book._id)} />
       </div>
     </div>
   );
