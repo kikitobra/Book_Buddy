@@ -43,12 +43,20 @@ export async function DELETE(req: NextRequest) {
       // 3. Delete all wishlist items
       db.collection("wishlist").deleteMany({ userId }),
 
-      // 4. Finally, delete the user account
+      // 4. Delete user's cart
+      db.collection("cart").deleteMany({ userId }),
+
+      // 5. Finally, delete the user account
       db.collection("users").deleteOne({ _id: new ObjectId(userId) }),
     ]);
 
-    const [ordersResult, reviewsResult, wishlistResult, userResult] =
-      deleteOperations;
+    const [
+      ordersResult,
+      reviewsResult,
+      wishlistResult,
+      cartResult,
+      userResult,
+    ] = deleteOperations;
 
     return NextResponse.json({
       ok: true,
@@ -57,6 +65,7 @@ export async function DELETE(req: NextRequest) {
         orders: ordersResult.deletedCount,
         reviews: reviewsResult.deletedCount,
         wishlist: wishlistResult.deletedCount,
+        cart: cartResult.deletedCount,
         user: userResult.deletedCount,
       },
     });

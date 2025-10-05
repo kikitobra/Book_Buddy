@@ -13,7 +13,7 @@ export default function NavbarCyber() {
   const [name, setName] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { count, toggle } = useCart();
+  const { count, toggle, clear: clearCart } = useCart();
 
   useEffect(() => {
     let mounted = true;
@@ -109,6 +109,9 @@ export default function NavbarCyber() {
     localStorage.removeItem("user_email");
     setAuthed(false);
     setName(null);
+
+    // Clear cart items from UI
+    clearCart();
 
     // Dispatch custom event to notify other components
     window.dispatchEvent(new CustomEvent("authStateChanged"));

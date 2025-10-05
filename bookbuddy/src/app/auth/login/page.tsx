@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { getApiPath } from "@/lib/utils";
+import { useCart } from "@/context/CartContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { loadCart } = useCart();
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,6 +38,9 @@ export default function LoginPage() {
         localStorage.setItem("user_name", data.user?.name || "User");
         localStorage.setItem("user_email", data.user?.email || email);
         window.dispatchEvent(new CustomEvent("authStateChanged"));
+
+        // Load user's cart from database
+        await loadCart();
       }
 
       router.push("/");
@@ -104,7 +109,10 @@ export default function LoginPage() {
 
           <p className="text-sm text-gray-300 text-center mt-6">
             Don’t have an account?{" "}
-            <Link href="/auth/register" className="text-pink-400 hover:underline">
+            <Link
+              href="/auth/register"
+              className="text-pink-400 hover:underline"
+            >
               Sign up here
             </Link>
           </p>
