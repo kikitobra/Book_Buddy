@@ -61,7 +61,6 @@ export default function AccountPage() {
   );
   const [notice, setNotice] = useState<string | null>(null);
 
-  // Update tab when URL changes
   useEffect(() => {
     if (tabParam && ["profile", "orders", "address"].includes(tabParam)) {
       setTab(tabParam);
@@ -171,7 +170,6 @@ export default function AccountPage() {
         </button>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-2">
         {(["profile", "orders", "address"] as const).map((t) => (
           <button
