@@ -3,15 +3,19 @@
 > Web app to browse, search, and buy English manga.
 
 ## Team Members
+
 - Aung Kaung Myat ([@Norman7781](https://github.com/Norman7781)) — [Repo](https://github.com/Norman7781/Book_Buddy)
 - Wai Yan Mya Thaung ([@yano49](https://github.com/yano49)) — [Repo](https://github.com/yano49/yano49.github.io.git)
 - Nyi Thu Hein ([@zenn404](https://github.com/zenn404)) - [Repo](https://github.com/zenn404/zenn404.github.io.git)
 
 ## Project Description
-BookBuddy is a Next.js app where users can explore a manga catalog, search by title/author/genre, view book details from a database, and add items to a cart/wishlist.  
+
+BookBuddy is a Next.js app where users can explore a manga catalog, search by title/author/genre, view book details from a database, and add items to a cart/wishlist.
 
 ### ✨ Key Features
+
 ### ✨ Key Features
+
 - 📚 **Catalog & Detail Pages** — Explore manga titles, view covers, authors, descriptions, and categories.
 - 🔍 **Search Functionality** — Quickly find manga by title, author, or genre using a smart search bar.
 - 💖 **Wishlist System** — Save favorite manga for later and manage your personalized reading list.
@@ -20,9 +24,8 @@ BookBuddy is a Next.js app where users can explore a manga catalog, search by ti
 - 🎨 **Modern UI Design** — Responsive dark theme built with TailwindCSS and gradient accents.
 - ☁️ **Database-Backed** — Fetches and displays manga data dynamically from the MangaDB API.
 
-
-
 ## Tech Stack
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
@@ -36,14 +39,13 @@ BookBuddy is a Next.js app where users can explore a manga catalog, search by ti
 ![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-0078D7?logo=azure-devops&logoColor=white)
 
 **Home**
-![Home](./screen_shot/bookbuddy-homepage.png)
+![Home](./screen-shots/bookbuddy-homepage.png)
 
 **Catalog (Search Results)**
-![Catalog](./screen_shot/bookbuddy-catalog.png)
+![Catalog](./screen-shots/bookbuddy-catalog.png)
 
 **Book Detail**
-![Book Detail](./screen_shot/bookbuddy-bookdetailpage.png)
+![Book Detail](./screen-shots/bookbuddy-bookdetailpage.png)
 
 **Cart**
-![Cart](./screen_shot/bookbuddy-cartpage.png)
-
+![Cart](./screen-shots/bookbuddy-cartpage.png)
