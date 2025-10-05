@@ -72,6 +72,8 @@ function AccountPageContent() {
   // User state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Orders state
   const [orders, setOrders] = useState<Order[]>([]);
@@ -132,11 +134,62 @@ function AccountPageContent() {
 
   const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save to localStorage
+
+    // Validate password if provided
+    if (newPassword || confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        setNotice("Passwords do not match!");
+        setTimeout(() => setNotice(null), 2000);
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        setNotice("Password must be at least 6 characters!");
+        setTimeout(() => setNotice(null), 2000);
+        return;
+      }
+
+      // Update password via API
+      try {
+        const token = localStorage.getItem("auth_token");
+        if (!token) {
+          setNotice("You must be logged in");
+          return;
+        }
+
+        const res = await fetch(getApiPath("/api/account/update-password"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ newPassword }),
+        });
+
+        const data = await res.json();
+
+        if (!data.ok) {
+          setNotice(data.error || "Failed to update password");
+          setTimeout(() => setNotice(null), 2000);
+          return;
+        }
+
+        // Clear password fields
+        setNewPassword("");
+        setConfirmPassword("");
+      } catch (err) {
+        setNotice("Failed to update password");
+        setTimeout(() => setNotice(null), 2000);
+        return;
+      }
+    }
+
+    // Save name and email to localStorage
     localStorage.setItem("user_name", name);
     localStorage.setItem("user_email", email);
-    setNotice("Profile updated.");
-    setTimeout(() => setNotice(null), 1500);
+
+    setNotice("Profile updated successfully!");
+    setTimeout(() => setNotice(null), 2000);
   };
 
   const saveAddr = (e: React.FormEvent) => {
@@ -266,21 +319,27 @@ function AccountPageContent() {
               />
             </div>
 
-            {/* Change password (UI only; wire to API later) */}
+            {/* Change password */}
             <div className="space-y-1">
-              <label className="text-sm text-white/70">New Password</label>
+              <label className="text-sm text-white/70">
+                New Password (min 6 characters)
+              </label>
               <input
                 type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
-                placeholder="••••••••"
+                placeholder="Leave blank to keep current password"
               />
             </div>
             <div className="space-y-1">
               <label className="text-sm text-white/70">Confirm Password</label>
               <input
                 type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full rounded-xl border border-line bg-panel text-white px-3 py-2"
-                placeholder="••••••••"
+                placeholder="Confirm new password"
               />
             </div>
 
@@ -392,7 +451,11 @@ function AccountPageContent() {
                         className="flex items-center gap-3 rounded-xl border border-line bg-panel p-2"
                       >
                         <img
-                          src={it.cover && it.cover.trim() ? it.cover : getAssetPath("/placeholder-cover.svg")}
+                          src={
+                            it.cover && it.cover.trim()
+                              ? it.cover
+                              : getAssetPath("/placeholder-cover.svg")
+                          }
                           alt=""
                           className="h-16 w-12 object-cover rounded"
                         />
