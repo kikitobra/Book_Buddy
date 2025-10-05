@@ -9,11 +9,15 @@
 
 ## Project Description
 BookBuddy is a Next.js app where users can explore a manga catalog, search by title/author/genre, view book details from a database, and add items to a cart/wishlist.  
-Key features:
-- Catalog & detail pages (DB-backed)
-- Search bar (routes to `/books_frontend?q=...`)
-- Cart drawer + full cart page
-- Simple auth (login/register demo)
+
+### ✨ Key Features
+- 📚 Catalog & detailed manga pages (from MangaDB API)
+- 🔍 Search bar for titles, authors, or genres
+- 🛒 Cart drawer + full cart page
+- 💖 Wishlist system
+- 🔐 Simple login/register demo with JWT
+- 🎨 Modern UI using TailwindCSS + Neon Gradient theme
+
 
 ## Tech Stack
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -29,13 +33,14 @@ Key features:
 ![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-0078D7?logo=azure-devops&logoColor=white)
 
 **Home**
-![Home](docs/screenshots/bookbuddy-homepage.png)
+![Home](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-homepage.png)
 
 **Catalog (Search Results)**
-![Catalog](docs/screenshots/bookbuddy-catalog.png)
+![Catalog](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-catalog.png)
 
 **Book Detail**
-![Book Detail](docs/screenshots/bookbuddy-bookdetailpage.png)
+![Book Detail](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-bookdetailpage.png)
 
 **Cart**
-![Cart](docs/screenshots/bookbuddy-cartpage.png)
+![Cart](https://raw.githubusercontent.com/Norman7781/Book_Buddy/main/docs/screenshots/bookbuddy-cartpage.png)
+
